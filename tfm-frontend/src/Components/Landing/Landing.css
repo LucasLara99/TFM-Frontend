@@ -1,19 +1,19 @@
-.landing {
+.landing-page {
   height: 100vh;
   width: 100%;
 }
 
-.background-img {
+.landing-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.left-part {
+.landing-left-part {
   background-color: #D60D8C;
 }
 
-.container {
+.landing-container {
   display: flex;
   flex-direction: column;
   text-align: center;
@@ -22,15 +22,17 @@
   color: #ffffff;
 }
 
-.container h1 {
+.landing-container h1 {
   font-size: 3em; 
+  margin-bottom: 0em;
 }
 
-.buttons-container {
-  margin-top: 3em;
+.landing-buttons-container {
+  margin-top: 2em;
+  margin-bottom: 0em;
 }
 
-.button {
+.landing-button {
   width: 35% !important; 
   height: 6vh !important; 
   margin: 1em !important;

@@ -1,199 +1,49 @@
-.sign-up-image-lummi {
-    position: absolute;
-    top: 0;
-    left: 720px;
-    width: 720px;
-    height: 1024px;
-    overflow: hidden;
-    object-fit: cover;
-    min-width: 320px;
-  }
-  .sign-up-heading {
-    align-self: stretch;
-    position: relative;
-    letter-spacing: -0.02em;
-    line-height: 120%;
-  }
-  .heading-container {
-    align-self: stretch;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: 51px;
-  }
-  .placeholder-text {
-    position: relative;
-    line-height: 150%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .input-form,
-  .text-container2 {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
-  }
-  .text-container2 {
-    flex: 1;
-    padding: 0 var(--padding-9xs);
-  }
-  .input-form {
-    align-self: stretch;
-    border-radius: var(--br-9xs);
-    background-color: var(--color-silver);
-    border: 1px solid var(--color-silver);
-    padding: var(--padding-base);
-  }
-  .form,
-  .input {
-    display: flex;
-    flex-direction: column;
-  }
-  .input {
-    align-self: stretch;
-    border-radius: var(--br-9xs);
-    align-items: flex-start;
-    justify-content: center;
-  }
-  .form {
-    width: 395px;
-    align-items: center;
-    justify-content: flex-start;
-    color: var(--color-darkslategray);
-  }
-  .placeholder-text1 {
-    position: relative;
-    line-height: 150%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .text-container3 {
-    flex: 1;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 0 var(--padding-9xs);
-  }
-  .input-form1,
-  .input1 {
-    align-self: stretch;
-    border-radius: var(--br-9xs);
-    display: flex;
-  }
-  .input-form1 {
-    background-color: var(--color-silver);
-    border: 1px solid var(--color-silver);
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
-    padding: var(--padding-base);
-  }
-  .input1 {
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
-    color: var(--color-darkslategray);
-  }
-  .cta2 {
-    flex: 1;
-    position: relative;
-    line-height: 150%;
-    font-weight: 600;
-  }
-  .button,
-  .text-container4 {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-  }
-  .text-container4 {
-    flex: 1;
-    height: 21px;
-    padding: 0 var(--padding-9xs);
-  }
-  .button {
-    width: 395px;
-    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-    border-radius: var(--br-9xs);
-    background-color: var(--color-mintcream);
-    padding: var(--padding-base) var(--padding-5xl);
-    cursor: pointer;
-    text-align: center;
-    color: var(--color-black);
-  }
-  .by-continuing-you {
-    align-self: stretch;
-    position: relative;
-    font-size: var(--font-size-base);
-    line-height: 160%;
-    text-align: center;
-  }
-  .copy-component {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 395px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-    max-width: 480px;
-  }
-  .cta3 {
-    flex: 1;
-    position: relative;
-    line-height: 150%;
-    font-weight: 600;
-  }
-  .button1,
-  .text-container5 {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-  }
-  .text-container5 {
-    flex: 1;
-    height: 21px;
-    padding: 0 var(--padding-9xs);
-  }
-  .button1 {
-    position: absolute;
-    top: 326px;
-    left: 0;
-    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-    border-radius: var(--br-9xs);
-    background-color: var(--color-mintcream);
-    width: 395px;
-    padding: var(--padding-base) var(--padding-5xl);
-    cursor: pointer;
-    text-align: center;
-    color: var(--color-black);
-  }
-  .copy-component-parent {
-    position: absolute;
-    top: 322px;
-    left: 160px;
-    width: 395px;
-    height: 379px;
-  }
-  .login {
-    width: 100%;
-    position: relative;
-    background-color: var(--color-mediumvioletred);
-    height: 1024px;
-    text-align: left;
-    font-size: var(--font-size-sm);
-    color: var(--color-white);
-    font-family: var(--font-inter);
-  }
-  
+.login-page {
+  height: 100vh;
+  width: 100%;
+}
+
+.login-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.login-left-part {
+  background-color: #D60D8C;
+}
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  height: 100%;
+  color: #ffffff;
+}
+
+.login-container h1 {
+  font-size: 3em;
+  margin-bottom: 0em;
+}
+
+.login-buttons-container {
+  margin-top: 1em;
+  margin-bottom: 0em;
+}
+
+
+.login-button {
+  width: 35% !important;
+  height: 6vh !important;
+  margin: 1em !important;
+  background-color: #ffffff !important;
+  color: #D60D8C !important;
+}
+
+.login-input {
+  margin: 0.3em !important;
+  width: 35% !important;
+  background-color: #ffffff !important;
+  border-radius: 3px;
+}
