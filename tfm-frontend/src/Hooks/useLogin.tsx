@@ -1,11 +1,9 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { User } from '../Models/User';
 
 const API_URL = 'http://localhost:8080/login';
 
 export const useLogin = () => {
-
-    const queryClient = useQueryClient();
 
     const mutation = useMutation({
         mutationFn: async (newUser: User) => {
@@ -19,7 +17,7 @@ export const useLogin = () => {
 
             if (!response.ok) {
                 const text = await response.text();
-                console.error('Server response:', text); // Check the response here
+                console.error('Server response:', text);
                 throw new Error('Network response was not ok');
             }
 

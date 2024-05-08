@@ -41,6 +41,11 @@
   color: #D60D8C !important;
 }
 
+.login-button:hover {
+  background-color: #d486b8 !important;
+  color: #ffffff !important;
+}
+
 .login-input {
   margin: 0.3em !important;
   width: 35% !important;

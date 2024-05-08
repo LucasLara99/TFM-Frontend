@@ -5,6 +5,7 @@ import Login from "./Components/Login/Login";
 import Register from "./Components/Register/Register";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Main from "./Components/Main/Main";
 
 const theme = createTheme({
   palette: {
@@ -25,6 +26,7 @@ const App: React.FC = () => {
             <Route path="/" element={<Landing />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/home" element={<Main />} />
           </Routes>
         </BrowserRouter>
       </QueryClientProvider>

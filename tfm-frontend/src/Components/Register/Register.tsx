@@ -1,15 +1,24 @@
 import { Button, Grid, TextField } from '@mui/material';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import img from '../../assets/register_login.png';
 import './Register.css';
 import useRegister from '../../Hooks/useRegister';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const registerMutation = useRegister();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (registerMutation.isSuccess) {
+            setEmail('');
+            setPassword('');
+            navigate('/home');
+        }
+    }, [registerMutation.isSuccess, navigate]);
 
     const handleSubmit = () => {
         if (!email || !password) {

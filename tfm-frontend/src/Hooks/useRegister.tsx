@@ -1,10 +1,9 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { User } from '../Models/User';
 
 const API_URL = 'http://localhost:8080/register';
 
 const useRegister = () => {
-    const queryClient = useQueryClient();
 
     const mutation = useMutation({
         mutationFn: async (newUser: User) => {
@@ -17,6 +16,8 @@ const useRegister = () => {
             });
         
             if (!response.ok) {
+                const text = await response.text();
+                console.error('Server response:', text);
                 throw new Error('Network response was not ok');
             }
 
@@ -25,12 +26,8 @@ const useRegister = () => {
         onSuccess: (data) => {
             console.log('Registration successful', data);
         },
-        onError: (error, newUser) => {
-            if (error.message.includes('409')) {
-                console.error('Registration error: User already exists', newUser);
-            } else {
-                console.error('Registration error:', error);
-            }
+        onError: (error) => {
+            console.error('Registration error:', error);
         }
     })
 
