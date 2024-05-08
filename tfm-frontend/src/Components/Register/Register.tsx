@@ -2,8 +2,26 @@ import { Button, Grid, TextField } from '@mui/material';
 import { Link } from "react-router-dom";
 import img from '../../assets/register_login.png';
 import './Register.css';
+import useRegister from '../../Hooks/useRegister';
+import { useState } from 'react';
 
 const Register = () => {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+    const registerMutation = useRegister();
+
+    const handleSubmit = () => {
+        if (!email || !password) {
+            setError('Los campos no pueden estar vacíos');
+        } else if (!email.includes('@')) {
+            setError('El formato del email no es válido');
+        } else {
+            setError('');
+            registerMutation.mutate({ email, password });
+        }
+    }
+
     return (
         <div className="register-page">
             <Grid container style={{ height: '100%' }}>
@@ -17,19 +35,38 @@ const Register = () => {
                         </div>
                         <div className='register-buttons-container'>
                             <div>
-                                <TextField className="register-input" id="filled-basic" label="Email" variant="filled" fullWidth />
+                                <TextField
+                                    className="register-input"
+                                    id="email"
+                                    label="Email"
+                                    variant="filled"
+                                    fullWidth
+                                    value={email}
+                                    onChange={e => setEmail(e.target.value)}
+                                />
                             </div>
                             <div>
-                                <Link to="/register">
-                                    <Button className="register-button" variant="contained">Registrarse</Button>
-                                </Link>
+                                <TextField
+                                    className="register-input"
+                                    id="password"
+                                    label="Contraseña"
+                                    variant="filled"
+                                    fullWidth
+                                    type="password"
+                                    value={password}
+                                    onChange={e => setPassword(e.target.value)}
+                                />
+                            </div>
+                            {error && <p>{error}</p>}
+                            <div>
+                                <Button className="register-button" onClick={handleSubmit} variant="contained">Registrarse</Button>
                             </div>
                             <div>
                                 <span> ¿Ya tienes una cuenta? </span>
                             </div>
                             <div>
                                 <Link to="/login">
-                                    <Button className="register-button" variant="contained">Inicia Sesión</Button>
+                                    <Button className="register-button" variant="contained" >Inicia Sesión</Button>
                                 </Link>
                             </div>
                         </div>

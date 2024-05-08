@@ -1,10 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { User } from '../Models/User';
 
-const API_URL = 'http://localhost:8080/login';
+const API_URL = 'http://localhost:8080/register';
 
-export const useLogin = () => {
-
+const useRegister = () => {
     const queryClient = useQueryClient();
 
     const mutation = useMutation({
@@ -16,21 +15,26 @@ export const useLogin = () => {
                 },
                 body: JSON.stringify(newUser),
             });
-
+        
             if (!response.ok) {
-                const text = await response.text();
-                console.error('Server response:', text); // Check the response here
                 throw new Error('Network response was not ok');
             }
 
             return response.json();
         },
-        onSuccess: () => {
-            console.log('Login successful');
+        onSuccess: (data) => {
+            console.log('Registration successful', data);
         },
-        onError: (error) => {
-            console.error('Login error:', error);
+        onError: (error, newUser) => {
+            if (error.message.includes('409')) {
+                console.error('Registration error: User already exists', newUser);
+            } else {
+                console.error('Registration error:', error);
+            }
         }
     })
-    return mutation
+
+    return mutation;
 }
+
+export default useRegister;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button, Grid, TextField } from '@mui/material';
 import { Link } from "react-router-dom";
 import img from '../../assets/register_login.png';
@@ -8,11 +8,18 @@ import { useLogin } from '../../Hooks/useLogin';
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
+    const [error, setError] = useState('');
     const loginMutation = useLogin();
 
     const handleLogin = () => {
-        loginMutation.mutate({ email, password });
+        if (!email || !password) {
+            setError('Los campos no pueden estar vacíos');
+        } else if (!email.includes('@')) {
+            setError('El formato del email no es válido');
+        } else {
+            setError('');
+            loginMutation.mutate({ email, password });
+        }
     }
 
     return (
@@ -30,24 +37,27 @@ const Login = () => {
                             <div>
                                 <TextField
                                     className="login-input"
+                                    id="email"
                                     label="Email"
                                     variant="filled"
                                     fullWidth
                                     value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
+                                    onChange={e => setEmail(e.target.value)}
                                 />
                             </div>
                             <div>
                                 <TextField
                                     className="login-input"
+                                    id="password"
                                     label="Contraseña"
                                     variant="filled"
                                     fullWidth
                                     type="password"
                                     value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
+                                    onChange={e => setPassword(e.target.value)}
                                 />
                             </div>
+                            {error && <p>{error}</p>}
                             <div>
                                 <Button className="login-button" variant="contained" onClick={handleLogin}>Iniciar Sesión</Button>
                             </div>
