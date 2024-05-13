@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button, Grid, TextField } from '@mui/material';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import img from '../../assets/register_login.png';
 import './Login.css';
 import { useLogin } from '../../Hooks/useLogin';
@@ -10,6 +10,13 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const loginMutation = useLogin();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (loginMutation.isSuccess) {
+            navigate('/home');
+        }
+    }, [loginMutation.isSuccess, navigate]);
 
     const handleLogin = () => {
         if (!email || !password) {
@@ -28,7 +35,7 @@ const Login = () => {
                 <Grid className='login-left-part' item xs={6} style={{ height: '100%' }}>
                     <div className='login-container'>
                         <div>
-                            <h1>Inicia Sesión</h1>
+                            <h1>Inicia sesión</h1>
                         </div>
                         <div>
                             <h4>¡Bienvenido de nuevo!</h4>

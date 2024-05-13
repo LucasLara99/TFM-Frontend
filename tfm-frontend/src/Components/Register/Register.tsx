@@ -8,6 +8,7 @@ import { useState, useEffect } from 'react';
 const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [facultad, setFacultad] = useState('');
     const [error, setError] = useState('');
     const registerMutation = useRegister();
     const navigate = useNavigate();
@@ -16,18 +17,19 @@ const Register = () => {
         if (registerMutation.isSuccess) {
             setEmail('');
             setPassword('');
+            setFacultad('');
             navigate('/home');
         }
     }, [registerMutation.isSuccess, navigate]);
 
     const handleSubmit = () => {
-        if (!email || !password) {
+        if (!email || !password || !facultad) {
             setError('Los campos no pueden estar vacíos');
         } else if (!email.includes('@')) {
             setError('El formato del email no es válido');
         } else {
             setError('');
-            registerMutation.mutate({ email, password });
+            registerMutation.mutate({ email, password, facultad });
         }
     }
 
@@ -57,6 +59,17 @@ const Register = () => {
                             <div>
                                 <TextField
                                     className="register-input"
+                                    id="facultad"
+                                    label="Facultad"
+                                    variant="filled"
+                                    fullWidth
+                                    value={facultad}
+                                    onChange={e => setFacultad(e.target.value)} 
+                                />
+                            </div>
+                            <div>
+                                <TextField
+                                    className="register-input"
                                     id="password"
                                     label="Contraseña"
                                     variant="filled"
@@ -75,7 +88,7 @@ const Register = () => {
                             </div>
                             <div>
                                 <Link to="/login">
-                                    <Button className="register-button" variant="contained" >Inicia Sesión</Button>
+                                    <Button className="register-button" variant="contained" >Iniciar Sesión</Button>
                                 </Link>
                             </div>
                         </div>
