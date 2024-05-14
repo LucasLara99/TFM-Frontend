@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, CardMedia, Grid, Typography } from '@mui/material';
 import './Ligas.css';
 import futbolImg from '../../assets/futbol.jpg';
 import futsalImg from '../../assets/futsal.jpg';
@@ -44,7 +43,7 @@ const Ligas = () => {
 
     const handleLeagueClick = (league: League) => {
         if (user && user.rol === 'ADMIN') {
-            navigate(`/equipos/${league.name}`);
+            navigate('/equipos', { state: { liga: league.name } });
         }
     }
 
@@ -57,23 +56,20 @@ const Ligas = () => {
     return (
         <div className="ligas-main-page">
             <Header />
-            <Grid container spacing={3}>
+            <div className="grid-wrapper">
                 {leagues.map((league) => (
-                    <Grid item xs={4} key={league.id}>
-                        <Card className="league-card" onClick={() => handleLeagueClick(league)}>
-                            <CardMedia
-                                component="img"
-                                alt={league.name}
-                                height="100"
-                                image={leagueImages[league.name]}
-                            />
-                            <Typography variant="h5" component="div" className="league-title">
-                                {league.name}
-                            </Typography>
-                        </Card>
-                    </Grid>
+                    <div className="flip-card" onClick={() => handleLeagueClick(league)}>
+                        <div className="flip-card-inner">
+                            <div className="flip-card-front">
+                                <img className="league-image" src={leagueImages[league.name]} alt={league.name} style={{ width: '100%', height: '100%' }} />
+                            </div>
+                            <div className="flip-card-back">
+                                <h1>{league.name}</h1>
+                            </div>
+                        </div>
+                    </div>
                 ))}
-            </Grid>
+            </div>
         </div>
     );
 };

@@ -6,32 +6,61 @@
     background-color: #fff;
 }
 
-.league-card {
-    background-color: #fff;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+.grid-wrapper {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    align-items: center;
+    height: calc(100vh - 50px);
+    padding: 0 50px; 
+}
+
+.flip-card {
+    background-color: transparent;
+    width: 300px;
+    height: 300px;
+    perspective: 1000px;
     margin: 10px;
-    transition: transform 0.3s ease-in-out;
+    border-radius: 10px;
+}
+
+.flip-card-inner {
     position: relative;
     width: 100%;
-    max-width: 300px;
-}
-
-.league-card:hover {
-    transform: scale(1.05);
-}
-
-.league-card img {
-    width: 100%;
-    height: 100px;
-    object-fit: cover;
-}
-
-.league-title {
-    padding: 10px;
+    height: 100%;
     text-align: center;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+}
+
+.flip-card:hover .flip-card-inner {
+    transform: rotateY(180deg);
+    border-radius: 10px;
+}
+
+.flip-card-front, .flip-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 10px;
+}
+
+.flip-card-front {
+    background-color: #bbb;
+    color: black;
+}
+
+.league-image {
+    border-radius: 10px;
+}
+
+.flip-card-back {
     background-color: #D60D8C;
     color: white;
-    font-size: 1em;
+    transform: rotateY(180deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

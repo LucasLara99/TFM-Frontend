@@ -1,15 +1,16 @@
 import { useAuth } from '../../Hooks/useAuth';
 import Header from '../Header/Header';
 import './Equipos.css';
-import { useParams } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 const Equipos = () => {
     const { user } = useAuth();
-    const { leagueName } = useParams();
+    const location = useLocation();
+    const liga = location.state?.liga;
 
     const handleCreateTeam = () => {
         if (user) {
-            const teamName = `${leagueName} ${user.facultad}`;
+            const teamName = `${liga} ${user.facultad}`;
             console.log(teamName);
         }
     }
