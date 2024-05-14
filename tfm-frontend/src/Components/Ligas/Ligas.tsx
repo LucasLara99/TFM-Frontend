@@ -14,6 +14,8 @@ import atletismoImg from '../../assets/atletismo.jpg';
 import { useAuth } from '../../Hooks/useAuth';
 import Header from '../Header/Header';
 
+const apiUrl = import.meta.env.VITE_APP_API_URL;
+
 interface League {
     id: number;
     name: string;
@@ -47,10 +49,10 @@ const Ligas = () => {
     }
 
     useEffect(() => {
-        fetch('http://localhost:8080/leagues/all')
+        fetch(`${apiUrl}/leagues/all`)
             .then(response => response.json())
             .then(data => setLeagues(data));
-    }, []);
+    }, [apiUrl]);
 
     return (
         <div className="ligas-main-page">

@@ -1,13 +1,13 @@
 import { useMutation } from '@tanstack/react-query';
 import { User } from '../Models/User';
 
-const API_URL = 'http://localhost:8080/register';
+const apiUrl = import.meta.env.VITE_APP_API_URL;
 
 const useRegister = () => {
 
     const mutation = useMutation({
         mutationFn: async (newUser: User) => {
-            const response = await fetch(API_URL, {
+            const response = await fetch(`${apiUrl}/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

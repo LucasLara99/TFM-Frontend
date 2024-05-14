@@ -18,7 +18,7 @@ const Register = () => {
             setEmail('');
             setPassword('');
             setFacultad('');
-            navigate('/home');
+            navigate('/login');
         }
     }, [registerMutation.isSuccess, navigate]);
 

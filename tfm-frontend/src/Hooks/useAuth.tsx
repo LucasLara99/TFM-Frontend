@@ -3,6 +3,8 @@ import { useMutation } from '@tanstack/react-query';
 import { User } from '../Models/User';
 import { useNavigate } from 'react-router-dom';
 
+const apiUrl = import.meta.env.VITE_APP_API_URL;
+
 interface AuthContextData {
     user: User | null;
     login: (email: string, password: string) => void;
@@ -15,15 +17,13 @@ interface AuthProviderProps {
     children: ReactNode;
 }
 
-const API_URL = 'http://localhost:8080/login';
-
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
     const navigate = useNavigate();
 
     const loginMutation = useMutation({
         mutationFn: async (newUser: User) => {
-            const response = await fetch(API_URL, {
+            const response = await fetch(`${apiUrl}/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
