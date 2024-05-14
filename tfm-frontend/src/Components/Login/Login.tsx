@@ -1,22 +1,15 @@
 import { useState, useEffect } from 'react';
 import { Button, Grid, TextField } from '@mui/material';
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import img from '../../assets/register_login.png';
 import './Login.css';
-import { useLogin } from '../../Hooks/useLogin';
+import { useAuth } from '../../Hooks/useAuth';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const loginMutation = useLogin();
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        if (loginMutation.isSuccess) {
-            navigate('/home');
-        }
-    }, [loginMutation.isSuccess, navigate]);
+    const { user, login } = useAuth();
 
     const handleLogin = () => {
         if (!email || !password) {
@@ -25,7 +18,7 @@ const Login = () => {
             setError('El formato del email no es válido');
         } else {
             setError('');
-            loginMutation.mutate({ email, password });
+            login(email, password);
         }
     }
 

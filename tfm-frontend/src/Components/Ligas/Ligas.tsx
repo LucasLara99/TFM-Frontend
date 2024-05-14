@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Card, CardMedia, Grid, Typography } from '@mui/material';
 import './Ligas.css';
 import futbolImg from '../../assets/futbol.jpg';
@@ -11,6 +11,7 @@ import handballImg from '../../assets/handball.jpg';
 import tennisImg from '../../assets/tennis.jpeg';
 import padelImg from '../../assets/padel.jpg';
 import atletismoImg from '../../assets/atletismo.jpg';
+import { useAuth } from '../../Hooks/useAuth';
 
 interface League {
     id: number;
@@ -35,6 +36,14 @@ const leagueImages: LeagueImages = {
 
 const Ligas = () => {
     const [leagues, setLeagues] = useState<League[]>([]);
+    const { user } = useAuth();
+    const navigate = useNavigate();
+
+    const handleLeagueClick = (league: League) => {
+        if (user && user.rol === 'ADMIN') {
+            navigate(`/equipos/${league.name}`);
+        }
+    }
 
     useEffect(() => {
         fetch('http://localhost:8080/leagues/all')
@@ -54,7 +63,7 @@ const Ligas = () => {
             <Grid container spacing={3}>
                 {leagues.map((league) => (
                     <Grid item xs={4} key={league.id}>
-                        <Card className="league-card">
+                        <Card className="league-card" onClick={() => handleLeagueClick(league)}>
                             <CardMedia
                                 component="img"
                                 alt={league.name}

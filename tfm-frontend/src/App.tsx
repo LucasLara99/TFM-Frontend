@@ -9,6 +9,7 @@ import Main from "./Components/Main/Main";
 import Perfil from "./Components/Profile/Perfil";
 import Ligas from "./Components/Ligas/Ligas";
 import Equipos from "./Components/Equipos/Equipos";
+import { AuthProvider } from "./Hooks/useAuth";
 
 const theme = createTheme({
   palette: {
@@ -25,16 +26,18 @@ const App: React.FC = () => {
     <ThemeProvider theme={theme}>
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Landing />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/home" element={<Main />} />
-            <Route path="/perfil" element={<Perfil />} />
-            <Route path="/ligas" element={<Ligas />} />
-            <Route path="/equipos" element={<Equipos />} />
-            <Route path="*" element={<h1>Not Found</h1>} />
-          </Routes>
+          <AuthProvider>
+            <Routes>
+              <Route path="/" element={<Landing />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/home" element={<Main />} />
+              <Route path="/perfil" element={<Perfil />} />
+              <Route path="/ligas" element={<Ligas />} />
+              <Route path="/equipos" element={<Equipos />} />
+              <Route path="*" element={<h1>Not Found</h1>} />
+            </Routes>
+          </AuthProvider>
         </BrowserRouter>
       </QueryClientProvider>
     </ThemeProvider>
