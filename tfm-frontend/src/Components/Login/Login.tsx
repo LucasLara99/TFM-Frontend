@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Button, Grid, TextField } from '@mui/material';
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import img from '../../assets/register_login.png';
 import './Login.css';
 import { useAuth } from '../../Hooks/useAuth';
@@ -9,7 +9,7 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const { user, login } = useAuth();
+    const { login } = useAuth();
 
     const handleLogin = () => {
         if (!email || !password) {

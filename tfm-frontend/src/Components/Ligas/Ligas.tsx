@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardMedia, Grid, Typography } from '@mui/material';
 import './Ligas.css';
 import futbolImg from '../../assets/futbol.jpg';
@@ -12,6 +12,7 @@ import tennisImg from '../../assets/tennis.jpeg';
 import padelImg from '../../assets/padel.jpg';
 import atletismoImg from '../../assets/atletismo.jpg';
 import { useAuth } from '../../Hooks/useAuth';
+import Header from '../Header/Header';
 
 interface League {
     id: number;
@@ -53,13 +54,7 @@ const Ligas = () => {
 
     return (
         <div className="ligas-main-page">
-            <header className="main-header">
-                <Link to="/home"><b>Inicio</b></Link>
-                <Link to="/ligas"><b>Ligas</b></Link>
-                <Link to="/equipos"><b>Equipos</b></Link>
-                <Link to="/perfil"><b>Perfil</b></Link>
-                <Link to="/"><b>Salir</b></Link>
-            </header>
+            <Header />
             <Grid container spacing={3}>
                 {leagues.map((league) => (
                     <Grid item xs={4} key={league.id}>

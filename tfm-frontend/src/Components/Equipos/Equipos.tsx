@@ -1,6 +1,7 @@
 import { useAuth } from '../../Hooks/useAuth';
+import Header from '../Header/Header';
 import './Equipos.css';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 const Equipos = () => {
     const { user } = useAuth();
@@ -13,19 +14,9 @@ const Equipos = () => {
         }
     }
 
-    const handleLogout = () => {
-        localStorage.clear();
-    }
-
     return (
         <div className='equipos-main-page'>
-            <header className="main-header">
-                <Link to="/home"><b>Inicio</b></Link>
-                <Link to="/ligas"><b>Ligas</b></Link>
-                <Link to="/equipos"><b>Equipos</b></Link>
-                <Link to="/perfil"><b>Perfil</b></Link>
-                <Link to="/" onClick={handleLogout}><b>Salir</b></Link>
-            </header>
+            <Header />
             {user && user.rol === 'ADMIN' && (
                 <button onClick={handleCreateTeam}>Crear equipo</button>
             )}
