@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { User } from '../Models/User';
 import { useNavigate } from 'react-router-dom';
@@ -21,32 +21,45 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
     const navigate = useNavigate();
 
+    useEffect(() => {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
+        }
+    }, []);
+
     const loginMutation = useMutation({
-        mutationFn: async (newUser: User) => {
+        mutationFn: async (loginRequest: { email: string, password: string }) => {
             const response = await fetch(`${apiUrl}/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(newUser),
+                body: JSON.stringify(loginRequest),
             });
 
             if (!response.ok) {
-                const text = await response.text();
-                console.error('Server response:', text);
-                throw new Error('Network response was not ok');
+                throw new Error('Invalid credentials');
             }
+
             const data = await response.json();
-            return data;
+            return {
+                email: data.email,
+                facultad: data.facultad,
+                rol: data.rol,
+                token: data.token,
+            };
         },
         onSuccess: (data) => {
-            setUser(data.user);
+            setUser(data);
             localStorage.setItem('authToken', data.token);
+            // Store user data in localStorage
+            localStorage.setItem('user', JSON.stringify(data));
             navigate('/home');
         },
         onError: (error) => {
-            console.error('Login error:', error);
-        }
+            console.error('Error logging in:', error);
+        },
     });
 
     const login = (email: string, password: string) => {
