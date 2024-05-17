@@ -1,11 +1,11 @@
 .main-page {
     width: 100%;
-    height: auto;
-    min-height: 100vh;
+    height: 100vh;
     background-image: url('../../assets/main-background.jpg');
     background-size: cover;
     background-position: center;
-    padding-top: 50px;
+    padding-top: 2em;
+    box-sizing: border-box;
 }
 
 .title-subtitle-container {

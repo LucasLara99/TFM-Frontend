@@ -1,66 +1,78 @@
 .ligas-main-page {
     width: 100%;
-    height: auto;
-    min-height: 100vh;
-    padding-top: 50px;
+    height: 100vh;
+    box-sizing: border-box;
+    padding-top: 2em;
     background-color: #fff;
-}
-
-.grid-wrapper {
     display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
+    flex-direction: column;
     align-items: center;
-    height: calc(100vh - 50px);
-    padding: 0 50px; 
 }
 
-.flip-card {
-    background-color: transparent;
-    width: 300px;
-    height: 300px;
+.content-container {
+    display: flex;
+    width: 80%;
+    height: 80%;
+    margin-top: 1.5em;
     perspective: 1000px;
-    margin: 10px;
-    border-radius: 10px;
-}
-
-.flip-card-inner {
     position: relative;
-    width: 100%;
+}
+
+.info-container, .image-container {
+    width: 50%;
     height: 100%;
-    text-align: center;
-    transition: transform 0.8s;
-    transform-style: preserve-3d;
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    overflow: hidden;
 }
 
-.flip-card:hover .flip-card-inner {
-    transform: rotateY(180deg);
-    border-radius: 10px;
-}
-
-.flip-card-front, .flip-card-back {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
-    border-radius: 10px;
-}
-
-.flip-card-front {
-    background-color: #bbb;
-    color: black;
-}
-
-.league-image {
-    border-radius: 10px;
-}
-
-.flip-card-back {
-    background-color: #D60D8C;
-    color: white;
-    transform: rotateY(180deg);
+.info-container {
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+    background-color: #D60D8C;
+    border-radius: 10px 0 0 10px;
+}
+
+.image-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.8s;
+    border-radius: 0 10px 10px 0;
+}
+
+.info-content {
+    text-align: center;
+    color: #fff;
+}
+
+.sport-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s;
+}
+
+.arrows-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.arrow-right {
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-left: 20px solid #D60D8C;
+    margin: 1em;
+}
+
+.arrow-left {
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-right: 20px solid #D60D8C;
+    margin: 1em;
 }

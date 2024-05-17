@@ -1,5 +1,6 @@
 .landing-page {
   height: 100vh;
+  box-sizing: border-box;
   width: 100%;
 }
 

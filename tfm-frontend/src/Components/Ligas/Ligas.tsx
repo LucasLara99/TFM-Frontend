@@ -25,27 +25,34 @@ interface LeagueImages {
 }
 
 const leagueImages: LeagueImages = {
-    'futbol': futbolImg,
-    'futsal': futsalImg,
-    'voleibol': volleyballImg,
-    'baloncesto': basketballImg,
-    'rugby': rugbyImg,
-    'balonmano': handballImg,
-    'tenis': tennisImg,
-    'padel': padelImg,
-    'atletismo': atletismoImg
+    'Fútbol': futbolImg,
+    'Fútbol sala': futsalImg,
+    'Voleibol': volleyballImg,
+    'Baloncesto': basketballImg,
+    'Rugby': rugbyImg,
+    'Balonmano': handballImg,
+    'Tenis': tennisImg,
+    'Pádel': padelImg,
+    'Atletismo': atletismoImg
+};
+
+const sportsInfo: { [key: string]: string } = {
+    'Fútbol': 'Información sobre fútbol.',
+    'Fútbol sala': 'Información sobre futsal.',
+    'Voleibol': 'Información sobre voleibol.',
+    'Baloncesto': 'Información sobre baloncesto.',
+    'Rugby': 'Información sobre rugby.',
+    'Balonmano': 'Información sobre balonmano.',
+    'Tenis': 'Información sobre tenis.',
+    'Pádel': 'Información sobre pádel.',
+    'Atletismo': 'Información sobre atletismo.'
 };
 
 const Ligas = () => {
     const [leagues, setLeagues] = useState<League[]>([]);
+    const [currentIndex, setCurrentIndex] = useState(0);
     const { user } = useAuth();
     const navigate = useNavigate();
-
-    const handleLeagueClick = (league: League) => {
-        if (user && user.rol === 'ADMIN') {
-            navigate('/equipos', { state: { liga: league.name } });
-        }
-    }
 
     useEffect(() => {
         fetch(`${apiUrl}/leagues/all`)
@@ -53,22 +60,43 @@ const Ligas = () => {
             .then(data => setLeagues(data));
     }, [apiUrl]);
 
+    const nextLeague = () => {
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % leagues.length);
+    };
+
+    const prevLeague = () => {
+        setCurrentIndex((prevIndex) => (prevIndex - 1 + leagues.length) % leagues.length);
+    }
+
+    const handleLeagueClick = (league: League) => {
+        if (user && user.rol === 'ADMIN') {
+            navigate('/equipos', { state: { liga: league.name } });
+        }
+    };
+
+    const currentLeague = leagues[currentIndex] || { name: '', id: 0 };
+
     return (
         <div className="ligas-main-page">
             <Header />
-            <div className="grid-wrapper">
-                {leagues.map((league) => (
-                    <div className="flip-card" onClick={() => handleLeagueClick(league)}>
-                        <div className="flip-card-inner">
-                            <div className="flip-card-front">
-                                <img className="league-image" src={leagueImages[league.name]} alt={league.name} style={{ width: '100%', height: '100%' }} />
-                            </div>
-                            <div className="flip-card-back">
-                                <h1>{league.name}</h1>
-                            </div>
-                        </div>
+            <div className="content-container">
+                <div className="info-container">
+                    <div className="info-content">
+                        <h1>{currentLeague.name}</h1>
+                        <p>{sportsInfo[currentLeague.name]}</p>
                     </div>
-                ))}
+                </div>
+                <div className="image-container">
+                    <img
+                        className="sport-image"
+                        src={leagueImages[currentLeague.name]}
+                        alt={currentLeague.name}
+                    />
+                </div>
+            </div>
+            <div className="arrows-container">
+                <div className="arrow-left" onClick={prevLeague}></div>
+                <div className="arrow-right" onClick={nextLeague}></div>
             </div>
         </div>
     );
