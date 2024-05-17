@@ -60,13 +60,31 @@ const Ligas = () => {
             .then(data => setLeagues(data));
     }, [apiUrl]);
 
+    const [rotateInfo, setRotateInfo] = useState(false);
+    const [rotateImage, setRotateImage] = useState(false);
+    const [direction, setDirection] = useState('right');
+
     const nextLeague = () => {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % leagues.length);
+        setRotateInfo(true);
+        setRotateImage(true);
+        setDirection('right');
+        setTimeout(() => {
+            setCurrentIndex((prevIndex) => (prevIndex + 1) % leagues.length);
+            setRotateInfo(false);
+            setRotateImage(false);
+        }, 500);
     };
 
     const prevLeague = () => {
-        setCurrentIndex((prevIndex) => (prevIndex - 1 + leagues.length) % leagues.length);
-    }
+        setRotateInfo(true);
+        setRotateImage(true);
+        setDirection('left');
+        setTimeout(() => {
+            setCurrentIndex((prevIndex) => (prevIndex - 1 + leagues.length) % leagues.length);
+            setRotateInfo(false);
+            setRotateImage(false);
+        }, 500);
+    };
 
     const handleLeagueClick = (league: League) => {
         if (user && user.rol === 'ADMIN') {
@@ -80,17 +98,18 @@ const Ligas = () => {
         <div className="ligas-main-page">
             <Header />
             <div className="content-container">
-                <div className="info-container">
+                <div className={`info-container ${rotateInfo ? `rotate-out-${direction}` : `rotate-in-${direction}`}`}>
                     <div className="info-content">
                         <h1>{currentLeague.name}</h1>
                         <p>{sportsInfo[currentLeague.name]}</p>
                     </div>
                 </div>
-                <div className="image-container">
+                <div className={`image-container ${rotateImage ? `rotate-out-${direction}` : `rotate-in-${direction}`}`}>
                     <img
                         className="sport-image"
                         src={leagueImages[currentLeague.name]}
                         alt={currentLeague.name}
+                        onClick={() => handleLeagueClick(currentLeague)}    
                     />
                 </div>
             </div>

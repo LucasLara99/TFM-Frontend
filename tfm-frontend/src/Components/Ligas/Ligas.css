@@ -18,7 +18,8 @@
     position: relative;
 }
 
-.info-container, .image-container {
+.info-container,
+.image-container {
     width: 50%;
     height: 100%;
     overflow: hidden;
@@ -75,4 +76,24 @@
     border-bottom: 10px solid transparent;
     border-right: 20px solid #D60D8C;
     margin: 1em;
+}
+
+.rotate-out-right {
+    transform: rotateY(5deg);
+    transition: transform 0.5s;
+}
+
+.rotate-in-right {
+    transform: rotateY(0deg);
+    transition: transform 0.5s;
+}
+
+.rotate-out-left {
+    transform: rotateY(-5deg);
+    transition: transform 0.5s;
+}
+
+.rotate-in-left {
+    transform: rotateY(0deg);
+    transition: transform 0.5s;
 }
