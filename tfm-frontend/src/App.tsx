@@ -10,6 +10,7 @@ import Perfil from "./Components/Profile/Perfil";
 import Ligas from "./Components/Ligas/Ligas";
 import Equipos from "./Components/Equipos/Equipos";
 import { AuthProvider } from "./Hooks/useAuth";
+import PrivateRoute from "./Components/PrivateRoute/PrivateRoute";
 
 const theme = createTheme({
   palette: {
@@ -31,10 +32,38 @@ const App: React.FC = () => {
               <Route path="/" element={<Landing />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              <Route path="/home" element={<Main />} />
-              <Route path="/perfil" element={<Perfil />} />
-              <Route path="/ligas" element={<Ligas />} />
-              <Route path="/equipos" element={<Equipos />} />
+              <Route
+                path="/home"
+                element={
+                  <PrivateRoute>
+                    <Main />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/perfil"
+                element={
+                  <PrivateRoute>
+                    <Perfil />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/ligas"
+                element={
+                  <PrivateRoute>
+                    <Ligas />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/equipos"
+                element={
+                  <PrivateRoute>
+                    <Equipos />
+                  </PrivateRoute>
+                }
+              />
               <Route path="*" element={<h1>Not Found</h1>} />
             </Routes>
           </AuthProvider>

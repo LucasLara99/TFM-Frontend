@@ -9,6 +9,7 @@ interface AuthContextData {
     user: User | null;
     login: (email: string, password: string) => void;
     logout: () => void;
+    loading: boolean;
 }
 
 const AuthContext = createContext<AuthContextData | undefined>(undefined);
@@ -19,6 +20,7 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -26,6 +28,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         if (storedUser) {
             setUser(JSON.parse(storedUser));
         }
+        setLoading(false);
     }, []);
 
     const loginMutation = useMutation({
@@ -53,7 +56,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         onSuccess: (data) => {
             setUser(data);
             localStorage.setItem('authToken', data.token);
-            // Store user data in localStorage
             localStorage.setItem('user', JSON.stringify(data));
             navigate('/home');
         },
@@ -68,11 +70,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     const logout = () => {
         setUser(null);
-        localStorage.removeItem('user');
+        localStorage.clear();
+        navigate('/');
     }
 
     return (
-        <AuthContext.Provider value={{ user, login, logout }}>
+        <AuthContext.Provider value={{ user, login, logout, loading }}>
             {children}
         </AuthContext.Provider>
     );

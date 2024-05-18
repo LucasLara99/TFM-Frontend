@@ -1,14 +1,22 @@
 import { Link, useMatch } from 'react-router-dom';
 import './Header.css';
+import { useAuth } from '../../Hooks/useAuth';
 
 const Header = () => {
+
+    const user = useAuth();
+
+    const handleLogout = () => {
+        user.logout();
+    }
+
     return (
         <header className="main-header">
             <CustomLink to="/home"><b>Inicio</b></CustomLink>
             <CustomLink to="/ligas"><b>Ligas</b></CustomLink>
             <CustomLink to="/equipos"><b>Equipos</b></CustomLink>
             <CustomLink to="/perfil"><b>Perfil</b></CustomLink>
-            <Link to="/" onClick={() => localStorage.clear()}><b>Salir</b></Link>
+            <Link to="/" onClick={handleLogout}><b>Salir</b></Link>
         </header>
     );
 };
