@@ -12,13 +12,9 @@ import padelImg from '../../assets/padel.jpg';
 import atletismoImg from '../../assets/atletismo.jpg';
 import { useAuth } from '../../Hooks/useAuth';
 import Header from '../Header/Header';
+import { League } from '../../Models/League';
 
 const apiUrl = import.meta.env.VITE_APP_API_URL;
-
-interface League {
-    id: number;
-    name: string;
-}
 
 interface LeagueImages {
     [key: string]: string;
@@ -36,16 +32,16 @@ const leagueImages: LeagueImages = {
     'Atletismo': atletismoImg
 };
 
-const sportsInfo: { [key: string]: string } = {
-    'Fútbol': 'Información sobre fútbol.',
-    'Fútbol sala': 'Información sobre futsal.',
-    'Voleibol': 'Información sobre voleibol.',
-    'Baloncesto': 'Información sobre baloncesto.',
-    'Rugby': 'Información sobre rugby.',
-    'Balonmano': 'Información sobre balonmano.',
-    'Tenis': 'Información sobre tenis.',
-    'Pádel': 'Información sobre pádel.',
-    'Atletismo': 'Información sobre atletismo.'
+const leagueEndpoints = {
+    'Fútbol': 1,
+    'Fútbol sala': 2,
+    'Tenis': 3,
+    'Voleibol': 4,
+    'Rugby': 5,
+    'Baloncesto': 6,
+    'Balonmano': 7,
+    'Atletismo': 8,
+    'Pádel': 9
 };
 
 const Ligas = () => {
@@ -55,10 +51,22 @@ const Ligas = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetch(`${apiUrl}/leagues/all`)
-            .then(response => response.json())
-            .then(data => setLeagues(data));
-    }, [apiUrl]);
+        const fetchLeagues = async () => {
+            try {
+                const leagueIds = Object.values(leagueEndpoints);
+                const leagueDataPromises = leagueIds.map(id =>
+                    fetch(`${apiUrl}/leagues/${id}`).then(response => response.json())
+                );
+
+                const leagueData = await Promise.all(leagueDataPromises);
+                setLeagues(leagueData);
+            } catch (error) {
+                console.error('Error fetching leagues:', error);
+            }
+        };
+
+        fetchLeagues();
+    }, []);
 
     const [rotateInfo, setRotateInfo] = useState(false);
     const [rotateImage, setRotateImage] = useState(false);
@@ -92,7 +100,16 @@ const Ligas = () => {
         }
     };
 
-    const currentLeague = leagues[currentIndex] || { name: '', id: 0 };
+    const currentLeague = leagues[currentIndex] || {
+        name: '',
+        id: 0,
+        season: '',
+        campus: '',
+        status: '',
+        periods: [],
+        registration: [],
+        groups: []
+    };
 
     return (
         <div className="ligas-main-page">
@@ -101,15 +118,36 @@ const Ligas = () => {
                 <div className={`info-container ${rotateInfo ? `rotate-out-${direction}` : `rotate-in-${direction}`}`}>
                     <div className="info-content">
                         <h1>{currentLeague.name}</h1>
-                        <p>{sportsInfo[currentLeague.name]}</p>
+                        <p>Temporada - {currentLeague.season}</p>
+                        <p>Campus - {currentLeague.campus}</p>
+                        <p>Estado - {currentLeague.status}</p>
+                        <h2>Periodos de realización</h2>
+                        {currentLeague.periods?.map((period, index) => (
+                            <p key={index}>{period.startDate} - {period.endDate} {period.name}</p>
+                        ))}
+                        <h2>Plazos de inscripción</h2>
+                        {currentLeague.registrations?.map((registrations, index) => (
+                            <p key={index}>{registrations.type} {registrations.period} {registrations.startDate} - {registrations.endDate}</p>
+                        ))}
+                        <h2>Grupos</h2>
+                        {currentLeague.groups?.map((group, index) => (
+                            <div key={index} className="group-container">
+                                <p><b>{group.name}</b></p>
+                                <p>Horario - {group.schedule}</p>
+                                <p>Lugar - {group.location}</p>
+                                <p>Máx. plazas - {group.maxPlaces}</p>
+                                <p>Plazas actuales - {group.currentUsers}</p>
+                                <p>Estado - {group.status}</p>
+                            </div>
+                        ))}
                     </div>
                 </div>
                 <div className={`image-container ${rotateImage ? `rotate-out-${direction}` : `rotate-in-${direction}`}`}>
                     <img
                         className="sport-image"
-                        src={leagueImages[currentLeague.name]}
+                        src={leagueImages[currentLeague.name] || ''}
                         alt={currentLeague.name}
-                        onClick={() => handleLeagueClick(currentLeague)}    
+                        onClick={() => handleLeagueClick(currentLeague)}
                     />
                 </div>
             </div>
