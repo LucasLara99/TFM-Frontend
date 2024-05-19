@@ -3,4 +3,5 @@ export interface User {
     password?: string;
     rol?: string;
     facultad?: string;
+    token?: string;
 }

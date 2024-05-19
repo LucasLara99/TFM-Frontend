@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import './Ligas.css';
 import futbolImg from '../../assets/futbol.jpg';
 import futsalImg from '../../assets/futsal.jpg';
@@ -13,6 +12,7 @@ import atletismoImg from '../../assets/atletismo.jpg';
 import { useAuth } from '../../Hooks/useAuth';
 import Header from '../Header/Header';
 import { League } from '../../Models/League';
+import CreateGroupForm from '../CreateGroupForm/CreateGroupForm';
 
 const apiUrl = import.meta.env.VITE_APP_API_URL;
 
@@ -47,8 +47,8 @@ const leagueEndpoints = {
 const Ligas = () => {
     const [leagues, setLeagues] = useState<League[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [showCreateGroupForm, setShowCreateGroupForm] = useState(false);
     const { user } = useAuth();
-    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchLeagues = async () => {
@@ -94,12 +94,6 @@ const Ligas = () => {
         }, 500);
     };
 
-    const handleLeagueClick = (league: League) => {
-        if (user && user.rol === 'ADMIN') {
-            navigate('/equipos', { state: { liga: league.name } });
-        }
-    };
-
     const currentLeague = leagues[currentIndex] || {
         name: '',
         id: 0,
@@ -140,6 +134,21 @@ const Ligas = () => {
                                 <p>Estado - {group.status}</p>
                             </div>
                         ))}
+                        {user && user.rol === 'ADMIN' && (
+                            <>
+                                {!showCreateGroupForm && (
+                                    <button
+                                        className="create-group-button"
+                                        onClick={() => setShowCreateGroupForm(true)}
+                                    >
+                                        Crear Grupo
+                                    </button>
+                                )}
+                                {showCreateGroupForm && (
+                                    <CreateGroupForm leagueId={currentLeague.id} onClose={() => setShowCreateGroupForm(false)} />
+                                )}
+                            </>
+                        )}
                     </div>
                 </div>
                 <div className={`image-container ${rotateImage ? `rotate-out-${direction}` : `rotate-in-${direction}`}`}>
@@ -147,7 +156,6 @@ const Ligas = () => {
                         className="sport-image"
                         src={leagueImages[currentLeague.name] || ''}
                         alt={currentLeague.name}
-                        onClick={() => handleLeagueClick(currentLeague)}
                     />
                 </div>
             </div>
