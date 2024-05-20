@@ -94,6 +94,32 @@ const Ligas = () => {
         }, 500);
     };
 
+    const handleJoinGroup = async (groupId: number) => {
+        if (!user) {
+            alert('Debes estar logueado para unirte a un grupo.');
+            return;
+        }
+    
+        try {
+            const response = await fetch(`${apiUrl}/leagues/${groupId}/join`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(user.id),
+            });
+    
+            if (!response.ok) {
+                throw new Error('Error al unirse al grupo');
+            }
+    
+            alert('Te has unido al grupo exitosamente.');
+        } catch (error) {
+            console.error('Error joining group:', error);
+            alert('Error al unirse al grupo. Inténtalo de nuevo más tarde.');
+        }
+    };
+
     const currentLeague = leagues[currentIndex] || {
         name: '',
         id: 0,
@@ -129,9 +155,17 @@ const Ligas = () => {
                                 <p><b>{group.name}</b></p>
                                 <p>Horario - {group.schedule}</p>
                                 <p>Lugar - {group.location}</p>
-                                <p>Máx. plazas - {group.maxPlaces}</p>
-                                <p>Plazas actuales - {group.currentUsers}</p>
+                                <p>Plazas máximas - {group.maxPlaces}</p>
+                                <p>Usuarios inscritos - {group.currentUsers}</p>
                                 <p>Estado - {group.status}</p>
+                                {user && (
+                                    <button
+                                        className="join-group-button"
+                                        onClick={() => handleJoinGroup(group.id)}
+                                    >
+                                        Unirse al Grupo
+                                    </button>
+                                )}
                             </div>
                         ))}
                         {user && user.rol === 'ADMIN' && (

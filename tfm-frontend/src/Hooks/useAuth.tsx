@@ -47,6 +47,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
             const data = await response.json();
             return {
+                id: data.id,
                 email: data.email,
                 facultad: data.facultad,
                 rol: data.rol,

@@ -18,8 +18,8 @@ const CreateGroupForm = ({ leagueId, onClose }: { leagueId: number; onClose: () 
         const maxPlacesValue = parseInt(maxPlaces);
         const currentUsersValue = parseInt(currentUsers);
 
-        if (maxPlacesValue < 0 || currentUsersValue < 0) {
-            alert("Los valores de máximo de plazas y usuarios actuales no pueden ser negativos.");
+        if (isNaN(maxPlacesValue) || isNaN(currentUsersValue) || maxPlacesValue < 0 || currentUsersValue < 0) {
+            alert("Los valores de máximo de plazas y usuarios actuales deben ser números no negativos.");
             return;
         }
 
@@ -74,20 +74,18 @@ const CreateGroupForm = ({ leagueId, onClose }: { leagueId: number; onClose: () 
                 <div>
                     <label>Máximo de Plazas</label>
                     <input
-                        type="number"
+                        type="text"
                         value={maxPlaces}
                         onChange={(e) => setMaxPlaces(e.target.value)}
-                        min="0"
                         required
                     />
                 </div>
                 <div>
                     <label>Usuarios Actuales</label>
                     <input
-                        type="number"
+                        type="text"
                         value={currentUsers}
                         onChange={(e) => setCurrentUsers(e.target.value)}
-                        min="0"
                         required
                     />
                 </div>
