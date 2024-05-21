@@ -6,4 +6,5 @@ export interface User {
     rol?: string;
     facultad?: string;
     token?: string;
+    teams?: Array<{ id: number; name: string }>;
 }

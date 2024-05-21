@@ -46,7 +46,6 @@ const Ligas = () => {
 
     const { user } = useAuth();
 
-
     const currentLeague = leagues[currentIndex] || {
         name: '',
         id: 0,
@@ -78,26 +77,31 @@ const Ligas = () => {
                         {currentLeague.groups?.map((group, index) => (
                             <div key={index} className="group-container">
                                 <h3>{group.name}</h3>
-                                {group.teams?.map((team, teamIndex) => (
-                                    <div key={teamIndex} className="team-card">
-                                        <h4 className="team-name">{team.name}</h4>
-                                        <div className="team-details">
-                                            <p><strong>Horario:</strong> {team.schedule}</p>
-                                            <p><strong>Lugar:</strong> {team.location}</p>
-                                            <p><strong>Plazas máximas:</strong> {team.max_places}</p>
-                                            <p><strong>Usuarios inscritos:</strong> {team.current_users}</p>
-                                        </div>
-                                        {user && (
-                                            <button
-                                                className="join-team-button"
-                                                onClick={() => handleJoinTeam(team.id)}
-                                            >
-                                                Unirse al Equipo
-                                            </button>
-                                        )}
-                                    </div>
-                                ))}
+                                {group.teams?.map((team, teamIndex) => {
+                                    const isInTeam = user?.teams?.some(userTeam => userTeam.id === team.id);
+                                    const noPlacesLeft = team.current_users >= team.max_places;
 
+                                    return (
+                                        <div key={teamIndex} className="team-card">
+                                            <h4 className="team-name">{team.name}</h4>
+                                            <div className="team-details">
+                                                <p><strong>Horario:</strong> {team.schedule}</p>
+                                                <p><strong>Lugar:</strong> {team.location}</p>
+                                                <p><strong>Plazas máximas:</strong> {team.max_places}</p>
+                                                <p><strong>Usuarios inscritos:</strong> {team.current_users}</p>
+                                            </div>
+                                            {user && (
+                                                <button
+                                                    className="join-team-button"
+                                                    onClick={() => handleJoinTeam(team.id)}
+                                                    disabled={isInTeam || noPlacesLeft}
+                                                >
+                                                    {isInTeam ? 'Ya estás en este equipo' : noPlacesLeft ? 'No quedan plazas' : 'Unirse al Equipo'}
+                                                </button>
+                                            )}
+                                        </div>
+                                    );
+                                })}
                                 {user && user.rol === 'ADMIN' && (
                                     <>
                                         {!hideCreateButton && (

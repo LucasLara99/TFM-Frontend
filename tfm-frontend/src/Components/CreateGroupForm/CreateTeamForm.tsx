@@ -10,7 +10,6 @@ const CreateTeamForm = ({ leagueId, groupId, onClose }: { leagueId: number; grou
     const [schedule, setSchedule] = useState('');
     const [location, setLocation] = useState('');
     const [max_places, setMaxPlaces] = useState('');
-    const [current_users, setCurrentUsers] = useState('');
     const { user } = useAuth();
 
     const handleCreateTeam = async (event: { preventDefault: () => void; }) => {
@@ -22,10 +21,9 @@ const CreateTeamForm = ({ leagueId, groupId, onClose }: { leagueId: number; grou
         }
 
         const maxPlacesValue = parseInt(max_places);
-        const currentUsersValue = parseInt(current_users);
 
-        if (isNaN(maxPlacesValue) || isNaN(currentUsersValue) || maxPlacesValue < 0 || currentUsersValue < 0) {
-            alert("Los valores de máximo de plazas y usuarios actuales deben ser números no negativos.");
+        if (isNaN(maxPlacesValue) || maxPlacesValue < 0 ) {
+            alert("El número máximo de plazas no puede ser negativo.");
             return;
         }
 
@@ -35,13 +33,16 @@ const CreateTeamForm = ({ leagueId, groupId, onClose }: { leagueId: number; grou
                 schedule,
                 location,
                 max_places: maxPlacesValue,
-                current_users: currentUsersValue,
             },
             userId: user.id,
         };
 
         try {
-            await axios.post(`${apiUrl}/leagues/${leagueId}/groups/${groupId}/teams`, newTeam);
+            await axios.post(`${apiUrl}/leagues/${leagueId}/groups/${groupId}/teams`, newTeam, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
             onClose();
         } catch (error) {
             console.error('Error creating team:', error);
@@ -85,15 +86,6 @@ const CreateTeamForm = ({ leagueId, groupId, onClose }: { leagueId: number; grou
                         type="text"
                         value={max_places}
                         onChange={(e) => setMaxPlaces(e.target.value)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>Usuarios Actuales</label>
-                    <input
-                        type="text"
-                        value={current_users}
-                        onChange={(e) => setCurrentUsers(e.target.value)}
                         required
                     />
                 </div>
