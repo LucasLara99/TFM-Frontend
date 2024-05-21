@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 
 const Register = () => {
     const [email, setEmail] = useState('');
+    const [name, setName] = useState('');
     const [password, setPassword] = useState('');
     const [facultad, setFacultad] = useState('');
     const [error, setError] = useState('');
@@ -18,6 +19,7 @@ const Register = () => {
             setEmail('');
             setPassword('');
             setFacultad('');
+            setName('');
             navigate('/login');
         }
     }, [registerMutation.isSuccess, navigate]);
@@ -29,7 +31,7 @@ const Register = () => {
             setError('El formato del email no es válido');
         } else {
             setError('');
-            registerMutation.mutate({ email, password, facultad });
+            registerMutation.mutate({ email, password, facultad, name });
         }
     }
 
@@ -65,6 +67,17 @@ const Register = () => {
                                     fullWidth
                                     value={facultad}
                                     onChange={e => setFacultad(e.target.value)} 
+                                />
+                            </div>
+                            <div>
+                                <TextField
+                                    className="register-input"
+                                    id="name"
+                                    label="Nombre"
+                                    variant="filled"
+                                    fullWidth
+                                    value={name}
+                                    onChange={e => setName(e.target.value)} 
                                 />
                             </div>
                             <div>
