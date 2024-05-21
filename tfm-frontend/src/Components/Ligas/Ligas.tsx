@@ -47,8 +47,15 @@ const leagueEndpoints = {
 const Ligas = () => {
     const [leagues, setLeagues] = useState<League[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [showCreateTeamForm, setShowCreateTeamForm] = useState(false);
+    const [showCreateTeamForm, setShowCreateTeamForm] = useState<{ [key: number]: boolean }>({});
     const { user } = useAuth();
+
+    const toggleCreateTeamForm = (groupId: number) => {
+        setShowCreateTeamForm((prevState) => ({
+            ...prevState,
+            [groupId]: !prevState[groupId],
+        }));
+    };
 
     useEffect(() => {
         const fetchLeagues = async () => {
@@ -158,8 +165,8 @@ const Ligas = () => {
                                         <p><b>{team.name}</b></p>
                                         <p>Horario - {team.schedule}</p>
                                         <p>Lugar - {team.location}</p>
-                                        <p>Plazas máximas - {team.maxPlaces}</p>
-                                        <p>Usuarios inscritos - {team.currentUsers}</p>
+                                        <p>Plazas máximas - {team.max_places}</p>
+                                        <p>Usuarios inscritos - {team.current_users}</p>
                                         <p>Estado - {team.status}</p>
                                         {user && (
                                             <button
@@ -175,15 +182,15 @@ const Ligas = () => {
                                     <>
                                         <button
                                             className="create-team-button"
-                                            onClick={() => setShowCreateTeamForm(true)}
+                                            onClick={() => toggleCreateTeamForm(group.id)}
                                         >
                                             Crear Equipo
                                         </button>
-                                        {showCreateTeamForm && (
+                                        {showCreateTeamForm[group.id] && (
                                             <CreateTeamForm
                                                 leagueId={currentLeague.id}
                                                 groupId={group.id}
-                                                onClose={() => setShowCreateTeamForm(false)}
+                                                onClose={() => toggleCreateTeamForm(group.id)}
                                             />
                                         )}
                                     </>

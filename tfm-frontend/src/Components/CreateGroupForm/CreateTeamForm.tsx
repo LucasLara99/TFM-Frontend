@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
+import { useAuth } from '../../Hooks/useAuth';
 import './CreateTeamForm.css';
 
 const apiUrl = import.meta.env.VITE_APP_API_URL;
@@ -8,15 +9,20 @@ const CreateTeamForm = ({ leagueId, groupId, onClose }: { leagueId: number; grou
     const [teamName, setTeamName] = useState('');
     const [schedule, setSchedule] = useState('');
     const [location, setLocation] = useState('');
-    const [maxPlaces, setMaxPlaces] = useState('');
-    const [currentUsers, setCurrentUsers] = useState('');
-    const [status, setStatus] = useState('');
+    const [max_places, setMaxPlaces] = useState('');
+    const [current_users, setCurrentUsers] = useState('');
+    const { user } = useAuth();
 
     const handleCreateTeam = async (event: { preventDefault: () => void; }) => {
         event.preventDefault();
 
-        const maxPlacesValue = parseInt(maxPlaces);
-        const currentUsersValue = parseInt(currentUsers);
+        if (!user) {
+            alert("Debes estar logueado para crear un equipo.");
+            return;
+        }
+
+        const maxPlacesValue = parseInt(max_places);
+        const currentUsersValue = parseInt(current_users);
 
         if (isNaN(maxPlacesValue) || isNaN(currentUsersValue) || maxPlacesValue < 0 || currentUsersValue < 0) {
             alert("Los valores de máximo de plazas y usuarios actuales deben ser números no negativos.");
@@ -24,12 +30,14 @@ const CreateTeamForm = ({ leagueId, groupId, onClose }: { leagueId: number; grou
         }
 
         const newTeam = {
-            name: teamName,
-            schedule,
-            location,
-            maxPlaces: maxPlacesValue,
-            currentUsers: currentUsersValue,
-            status,
+            team: {
+                name: teamName,
+                schedule,
+                location,
+                max_places: maxPlacesValue,
+                current_users: currentUsersValue,
+            },
+            userId: user.id,
         };
 
         try {
@@ -44,7 +52,7 @@ const CreateTeamForm = ({ leagueId, groupId, onClose }: { leagueId: number; grou
         <div className="create-team-form-container">
             <h2>Crear Nuevo Equipo</h2>
             <form onSubmit={handleCreateTeam}>
-            <div>
+                <div>
                     <label>Nombre del Equipo</label>
                     <input
                         type="text"
@@ -75,7 +83,7 @@ const CreateTeamForm = ({ leagueId, groupId, onClose }: { leagueId: number; grou
                     <label>Máximo de Plazas</label>
                     <input
                         type="text"
-                        value={maxPlaces}
+                        value={max_places}
                         onChange={(e) => setMaxPlaces(e.target.value)}
                         required
                     />
@@ -84,17 +92,8 @@ const CreateTeamForm = ({ leagueId, groupId, onClose }: { leagueId: number; grou
                     <label>Usuarios Actuales</label>
                     <input
                         type="text"
-                        value={currentUsers}
+                        value={current_users}
                         onChange={(e) => setCurrentUsers(e.target.value)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>Estado</label>
-                    <input
-                        type="text"
-                        value={status}
-                        onChange={(e) => setStatus(e.target.value)}
                         required
                     />
                 </div>
