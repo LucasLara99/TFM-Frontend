@@ -1,18 +1,18 @@
 import { useState } from 'react';
 import axios from 'axios';
-import './CreateGroupForm.css';
+import './CreateTeamForm.css';
 
 const apiUrl = import.meta.env.VITE_APP_API_URL;
 
-const CreateGroupForm = ({ leagueId, onClose }: { leagueId: number; onClose: () => void }) => {
-    const [groupName, setGroupName] = useState('');
+const CreateTeamForm = ({ leagueId, groupId, onClose }: { leagueId: number; groupId: number; onClose: () => void }) => {
+    const [teamName, setTeamName] = useState('');
     const [schedule, setSchedule] = useState('');
     const [location, setLocation] = useState('');
     const [maxPlaces, setMaxPlaces] = useState('');
     const [currentUsers, setCurrentUsers] = useState('');
     const [status, setStatus] = useState('');
 
-    const handleCreateGroup = async (event: { preventDefault: () => void; }) => {
+    const handleCreateTeam = async (event: { preventDefault: () => void; }) => {
         event.preventDefault();
 
         const maxPlacesValue = parseInt(maxPlaces);
@@ -23,8 +23,8 @@ const CreateGroupForm = ({ leagueId, onClose }: { leagueId: number; onClose: () 
             return;
         }
 
-        const newGroup = {
-            name: groupName,
+        const newTeam = {
+            name: teamName,
             schedule,
             location,
             maxPlaces: maxPlacesValue,
@@ -33,23 +33,23 @@ const CreateGroupForm = ({ leagueId, onClose }: { leagueId: number; onClose: () 
         };
 
         try {
-            await axios.post(`${apiUrl}/leagues/${leagueId}/groups`, newGroup);
+            await axios.post(`${apiUrl}/leagues/${leagueId}/groups/${groupId}/teams`, newTeam);
             onClose();
         } catch (error) {
-            console.error('Error creating group:', error);
+            console.error('Error creating team:', error);
         }
     };
 
     return (
-        <div className="create-group-form-container">
-            <h2>Crear Nuevo Grupo</h2>
-            <form onSubmit={handleCreateGroup}>
-                <div>
-                    <label>Nombre del Grupo</label>
+        <div className="create-team-form-container">
+            <h2>Crear Nuevo Equipo</h2>
+            <form onSubmit={handleCreateTeam}>
+            <div>
+                    <label>Nombre del Equipo</label>
                     <input
                         type="text"
-                        value={groupName}
-                        onChange={(e) => setGroupName(e.target.value)}
+                        value={teamName}
+                        onChange={(e) => setTeamName(e.target.value)}
                         required
                     />
                 </div>
@@ -107,4 +107,4 @@ const CreateGroupForm = ({ leagueId, onClose }: { leagueId: number; onClose: () 
     );
 };
 
-export default CreateGroupForm;
+export default CreateTeamForm;

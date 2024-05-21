@@ -1,4 +1,4 @@
-.create-group-form-container {
+.create-team-form-container {
     margin-top: 1em;
     background-color: white;
     padding: 20px;
@@ -7,20 +7,20 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.create-group-form-container h2 {
+.create-team-form-container h2 {
     margin-top: 0;
 }
 
-.create-group-form-container div {
+.create-team-form-container div {
     margin-bottom: 10px;
 }
 
-.create-group-form-container label {
+.create-team-form-container label {
     display: block;
     margin-bottom: 5px;
 }
 
-.create-group-form-container input {
+.create-team-form-container input {
     width: 100%;
     padding: 8px;
     border: none;
@@ -30,7 +30,7 @@
     border-radius: 5px;
 }
 
-.create-group-form-container button {
+.create-team-form-container button {
     margin-right: 10px;
     padding: 10px 20px;
     background-color: #D60D8C;
@@ -40,6 +40,6 @@
     cursor: pointer;
 }
 
-.create-group-form-container button[type="button"] {
+.create-team-form-container button[type="button"] {
     background-color: gray;
 }

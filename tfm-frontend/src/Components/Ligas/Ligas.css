@@ -145,7 +145,7 @@
     margin: 0.5em 0;
 }
 
-.create-group-button {
+.create-team-button {
     display: block;
     margin-top: 1em;
     padding: 10px 20px;
@@ -167,6 +167,7 @@
     cursor: pointer;
 }
 
-.join-group-button:hover {
+.join-group-button:hover,
+.create-team-button:hover {
     background-color: #A52A86;
 }

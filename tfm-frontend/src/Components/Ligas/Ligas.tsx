@@ -12,7 +12,7 @@ import atletismoImg from '../../assets/atletismo.jpg';
 import { useAuth } from '../../Hooks/useAuth';
 import Header from '../Header/Header';
 import { League } from '../../Models/League';
-import CreateGroupForm from '../CreateGroupForm/CreateGroupForm';
+import CreateTeamForm from '../CreateGroupForm/CreateTeamForm';
 
 const apiUrl = import.meta.env.VITE_APP_API_URL;
 
@@ -47,7 +47,7 @@ const leagueEndpoints = {
 const Ligas = () => {
     const [leagues, setLeagues] = useState<League[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [showCreateGroupForm, setShowCreateGroupForm] = useState(false);
+    const [showCreateTeamForm, setShowCreateTeamForm] = useState(false);
     const { user } = useAuth();
 
     useEffect(() => {
@@ -94,29 +94,29 @@ const Ligas = () => {
         }, 500);
     };
 
-    const handleJoinGroup = async (groupId: number) => {
+    const handleJoinTeam = async (teamId: number) => {
         if (!user) {
-            alert('Debes estar logueado para unirte a un grupo.');
+            alert('Debes estar logueado para unirte a un equipo.');
             return;
         }
-    
+
         try {
-            const response = await fetch(`${apiUrl}/leagues/${groupId}/join`, {
+            const response = await fetch(`${apiUrl}/teams/${teamId}/join`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(user.id),
             });
-    
+
             if (!response.ok) {
-                throw new Error('Error al unirse al grupo');
+                throw new Error('Error al unirse al equipo');
             }
-    
-            alert('Te has unido al grupo exitosamente.');
+
+            alert('Te has unido al equipo exitosamente.');
         } catch (error) {
-            console.error('Error joining group:', error);
-            alert('Error al unirse al grupo. Inténtalo de nuevo más tarde.');
+            console.error('Error joining team:', error);
+            alert('Error al unirse al equipo. Inténtalo de nuevo más tarde.');
         }
     };
 
@@ -138,51 +138,58 @@ const Ligas = () => {
                 <div className={`info-container ${rotateInfo ? `rotate-out-${direction}` : `rotate-in-${direction}`}`}>
                     <div className="info-content">
                         <h1>{currentLeague.name}</h1>
-                        <p>Temporada - {currentLeague.season}</p>
-                        <p>Campus - {currentLeague.campus}</p>
+                        <p>Campus - {currentLeague.campus.name}</p>
                         <p>Estado - {currentLeague.status}</p>
                         <h2>Periodos de realización</h2>
-                        {currentLeague.periods?.map((period, index) => (
+                        {currentLeague.seasons?.map((period, index) => (
                             <p key={index}>{period.startDate} - {period.endDate} {period.name}</p>
                         ))}
                         <h2>Plazos de inscripción</h2>
-                        {currentLeague.registrations?.map((registrations, index) => (
+                        {currentLeague.registrationPeriods?.map((registrations, index) => (
                             <p key={index}>{registrations.type} {registrations.period} {registrations.startDate} - {registrations.endDate}</p>
                         ))}
                         <h2>Grupos</h2>
                         {currentLeague.groups?.map((group, index) => (
                             <div key={index} className="group-container">
                                 <p><b>{group.name}</b></p>
-                                <p>Horario - {group.schedule}</p>
-                                <p>Lugar - {group.location}</p>
-                                <p>Plazas máximas - {group.maxPlaces}</p>
-                                <p>Usuarios inscritos - {group.currentUsers}</p>
-                                <p>Estado - {group.status}</p>
-                                {user && (
-                                    <button
-                                        className="join-group-button"
-                                        onClick={() => handleJoinGroup(group.id)}
-                                    >
-                                        Unirse al Grupo
-                                    </button>
+                                <p><b>Equipos</b></p>
+                                {group.teams?.map((team, teamIndex) => (
+                                    <div key={teamIndex} className="team-container">
+                                        <p><b>{team.name}</b></p>
+                                        <p>Horario - {team.schedule}</p>
+                                        <p>Lugar - {team.location}</p>
+                                        <p>Plazas máximas - {team.maxPlaces}</p>
+                                        <p>Usuarios inscritos - {team.currentUsers}</p>
+                                        <p>Estado - {team.status}</p>
+                                        {user && (
+                                            <button
+                                                className="join-team-button"
+                                                onClick={() => handleJoinTeam(team.id)}
+                                            >
+                                                Unirse al Equipo
+                                            </button>
+                                        )}
+                                    </div>
+                                ))}
+                                {user && user.rol === 'ADMIN' && (
+                                    <>
+                                        <button
+                                            className="create-team-button"
+                                            onClick={() => setShowCreateTeamForm(true)}
+                                        >
+                                            Crear Equipo
+                                        </button>
+                                        {showCreateTeamForm && (
+                                            <CreateTeamForm
+                                                leagueId={currentLeague.id}
+                                                groupId={group.id}
+                                                onClose={() => setShowCreateTeamForm(false)}
+                                            />
+                                        )}
+                                    </>
                                 )}
                             </div>
                         ))}
-                        {user && user.rol === 'ADMIN' && (
-                            <>
-                                {!showCreateGroupForm && (
-                                    <button
-                                        className="create-group-button"
-                                        onClick={() => setShowCreateGroupForm(true)}
-                                    >
-                                        Crear Grupo
-                                    </button>
-                                )}
-                                {showCreateGroupForm && (
-                                    <CreateGroupForm leagueId={currentLeague.id} onClose={() => setShowCreateGroupForm(false)} />
-                                )}
-                            </>
-                        )}
                     </div>
                 </div>
                 <div className={`image-container ${rotateImage ? `rotate-out-${direction}` : `rotate-in-${direction}`}`}>
