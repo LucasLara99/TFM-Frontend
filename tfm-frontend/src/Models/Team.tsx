@@ -1,3 +1,5 @@
+import { User } from "./User";
+
 export interface Team {
     id: number;
     name: string;
@@ -5,4 +7,5 @@ export interface Team {
     location: string;
     max_places: number;
     current_users: number;
+    captain?: User;
 }

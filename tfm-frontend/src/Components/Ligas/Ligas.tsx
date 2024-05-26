@@ -12,6 +12,8 @@ import { useAuth } from '../../Hooks/useAuth';
 import Header from '../Header/Header';
 import CreateTeamForm from '../CreateGroupForm/CreateTeamForm';
 import { useLeagues } from '../../Hooks/useLeagues';
+import JoinRequests from '../JoinRequests/JoinRequests';
+import { Team } from '../../Models/Team';
 
 interface LeagueImages {
     [key: string]: string;
@@ -44,7 +46,7 @@ const Ligas = () => {
         handleJoinTeam
     } = useLeagues();
 
-    const { user } = useAuth();
+    const { user, userTeams } = useAuth();
 
     const currentLeague = leagues[currentIndex] || {
         name: '',
@@ -77,10 +79,11 @@ const Ligas = () => {
                         {currentLeague.groups?.map((group, index) => (
                             <div key={index} className="group-container">
                                 <h3>{group.name}</h3>
-                                {group.teams?.map((team, teamIndex) => {
-                                    const isInTeam = user?.teams?.some(userTeam => userTeam.id === team.id);
+                                {group.teams?.map((team: Team, teamIndex) => {
+                                    const isInTeam = userTeams.some(userTeam => userTeam.id === team.id);
+                                    const isCaptain = team.captain?.id === user?.id;
                                     const noPlacesLeft = team.current_users >= team.max_places;
-
+                                    console.log(userTeams)
                                     return (
                                         <div key={teamIndex} className="team-card">
                                             <h4 className="team-name">{team.name}</h4>
@@ -90,19 +93,20 @@ const Ligas = () => {
                                                 <p><strong>Plazas máximas:</strong> {team.max_places}</p>
                                                 <p><strong>Usuarios inscritos:</strong> {team.current_users}</p>
                                             </div>
-                                            {user && (
+                                            {user && !isInTeam && !noPlacesLeft && (
                                                 <button
                                                     className="join-team-button"
                                                     onClick={() => handleJoinTeam(team.id)}
                                                     disabled={isInTeam || noPlacesLeft}
                                                 >
-                                                    {isInTeam ? 'Ya estás en este equipo' : noPlacesLeft ? 'No quedan plazas' : 'Unirse al Equipo'}
+                                                    {isInTeam ? 'Ya estás en este equipo' : noPlacesLeft ? 'No quedan plazas' : 'Solicitar inscripción'}
                                                 </button>
                                             )}
+                                            {isCaptain && <JoinRequests teamId={team.id} />}
                                         </div>
                                     );
                                 })}
-                                {user && user.rol === 'ADMIN' && (
+                                {user && (
                                     <>
                                         {!hideCreateButton && (
                                             <button

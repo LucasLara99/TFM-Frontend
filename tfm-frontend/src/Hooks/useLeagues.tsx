@@ -84,7 +84,7 @@ export const useLeagues = () => {
         }
 
         try {
-            const response = await fetch(`${apiUrl}/leagues/${teamId}/join`, {
+            const response = await fetch(`${apiUrl}/leagues/${teamId}/requests`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -93,27 +93,14 @@ export const useLeagues = () => {
             });
 
             if (!response.ok) {
-                throw new Error('Error al unirse al equipo');
+                throw new Error('Error al enviar la solicitud para unirse al equipo');
             }
 
-            // Refresca los datos de las ligas después de unirse a un equipo
-            const updatedLeagues = await fetchLeagues();
-            setLeagues(updatedLeagues);
-
-            alert('Te has unido al equipo exitosamente.');
+            alert('Solicitud enviada exitosamente.');
         } catch (error) {
-            console.error('Error joining team:', error);
-            alert('Error al unirse al equipo. Inténtalo de nuevo más tarde.');
+            console.error('Error sending join request:', error);
+            alert('Error al enviar la solicitud. Inténtalo de nuevo más tarde.');
         }
-    };
-
-    const fetchLeagues = async () => {
-        const leagueIds = Object.values(leagueEndpoints);
-        const leagueDataPromises = leagueIds.map(id =>
-            fetch(`${apiUrl}/leagues/${id}`).then(response => response.json())
-        );
-
-        return await Promise.all(leagueDataPromises);
     };
 
     return {

@@ -1,0 +1,38 @@
+.join-requests-container {
+    padding: 1em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    margin-top: 1em;
+    overflow: auto;
+}
+
+.join-request {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    padding: 0.5em;
+    border-bottom: 1px solid #ccc;
+}
+
+.join-request p {
+    margin: 0;
+}
+
+.join-request-actions {
+    margin-left: auto;
+}
+
+.join-request button {
+    margin-left: 0.5em;
+    padding: 0.5em;
+    background-color: #D60D8C;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.join-requests-title {
+    margin-top: 0.1em;
+}

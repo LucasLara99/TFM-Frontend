@@ -2,6 +2,8 @@ import { createContext, useContext, useState, ReactNode, useEffect } from 'react
 import { useMutation } from '@tanstack/react-query';
 import { User } from '../Models/User';
 import { useNavigate } from 'react-router-dom';
+import { Team } from '../Models/Team';
+import axios from 'axios';
 
 const apiUrl = import.meta.env.VITE_APP_API_URL;
 
@@ -10,6 +12,7 @@ interface AuthContextData {
     login: (email: string, password: string) => void;
     logout: () => void;
     loading: boolean;
+    userTeams: Team[];
 }
 
 const AuthContext = createContext<AuthContextData | undefined>(undefined);
@@ -22,6 +25,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
+    const [userTeams, setUserTeams] = useState<Team[]>([]);
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -30,6 +34,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
         setLoading(false);
     }, []);
+
+    useEffect(() => {
+        const fetchUserTeams = async () => {
+            if (!user?.id) {
+                console.log('userId is undefined');
+                return;
+            }
+
+            try {
+                const response = await axios.get(`${apiUrl}/users/${user.id}/teams`);
+                setUserTeams(response.data);
+            } catch (error) {
+                console.error('Error fetching user teams:', error);
+            }
+        };
+
+        fetchUserTeams();
+    }, [user?.id]);
 
     const loginMutation = useMutation({
         mutationFn: async (loginRequest: { email: string, password: string }) => {
@@ -76,7 +98,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, loading }}>
+        <AuthContext.Provider value={{ user, login, logout, loading, userTeams }}>
             {children}
         </AuthContext.Provider>
     );
