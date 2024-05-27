@@ -37,11 +37,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     useEffect(() => {
         const fetchUserTeams = async () => {
-            if (!user?.id) {
+            if (!user || !user.id) {
                 console.log('userId is undefined');
                 return;
             }
-
+        
             try {
                 const response = await axios.get(`${apiUrl}/users/${user.id}/teams`);
                 setUserTeams(response.data);
@@ -49,9 +49,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 console.error('Error fetching user teams:', error);
             }
         };
-
-        fetchUserTeams();
-    }, [user?.id]);
+    
+        if (user && user.id) {
+            fetchUserTeams();
+        }
+    }, [user]);
 
     const loginMutation = useMutation({
         mutationFn: async (loginRequest: { email: string, password: string }) => {
@@ -71,6 +73,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             return {
                 id: data.id,
                 email: data.email,
+                name: data.name,
                 facultad: data.facultad,
                 rol: data.rol,
                 token: data.token,

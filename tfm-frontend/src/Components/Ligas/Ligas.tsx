@@ -83,7 +83,6 @@ const Ligas = () => {
                                     const isInTeam = userTeams.some(userTeam => userTeam.id === team.id);
                                     const isCaptain = team.captain?.id === user?.id;
                                     const noPlacesLeft = team.current_users >= team.max_places;
-                                    console.log(userTeams)
                                     return (
                                         <div key={teamIndex} className="team-card">
                                             <h4 className="team-name">{team.name}</h4>

@@ -1,0 +1,99 @@
+.profile-page {
+    width: 100%;
+    height: 100vh;
+    padding-top: 2em;
+    background-color: #f0f2f5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.profile-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    height: 80%;
+}
+
+.profile-card {
+    display: flex;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    width: 100%;
+    max-width: 600px;
+}
+
+.profile-content {
+    display: flex;
+    width: 100%;
+    align-items: center;
+}
+
+.profile-qr {
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.qr-code {
+    width: 180px;
+    height: auto;
+}
+
+.profile-details {
+    background-color: #D60D8C;
+    padding: 20px;
+    flex: 1;
+}
+
+.profile-details p, .profile-details strong {
+    color: white;
+}
+
+.profile-name {
+    color: white;
+    margin: 0;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.profile-detail {
+    margin: 10px 0;
+    font-size: 1.1em;
+}
+
+.profile-detail strong {
+    font-weight: bold;
+}
+
+.profile-teams {
+    margin-top: 10px;
+}
+
+.team-list {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.team-item {
+    background: #e0e0e0;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.95em;
+}
+
+@media screen and (max-width: 768px) {
+    .profile-content {
+        flex-direction: column;
+    }
+}

@@ -6,7 +6,7 @@ import Register from "./Components/Register/Register";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Main from "./Components/Main/Main";
-import Perfil from "./Components/Profile/Perfil";
+import Perfil from "./Components/Perfil/Perfil";
 import Ligas from "./Components/Ligas/Ligas";
 import Equipos from "./Components/Equipos/Equipos";
 import { AuthProvider } from "./Hooks/useAuth";
