@@ -103,6 +103,26 @@ export const useLeagues = () => {
         }
     };
 
+    const handleGenerateMatches = async (groupId: number) => {
+        try {
+            const response = await fetch(`${apiUrl}/matches/generate/${groupId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Error al generar los partidos');
+            }
+
+            alert('Jornadas generadas correctamente.');
+        } catch (error) {
+            console.error('Error generating matches:', error);
+            alert('Error al generar los partidos. Inténtalo de nuevo más tarde.');
+        }
+    }
+
     return {
         leagues,
         currentIndex,
@@ -114,6 +134,7 @@ export const useLeagues = () => {
         toggleCreateTeamForm,
         nextLeague,
         prevLeague,
-        handleJoinTeam
+        handleJoinTeam,
+        handleGenerateMatches
     };
 };

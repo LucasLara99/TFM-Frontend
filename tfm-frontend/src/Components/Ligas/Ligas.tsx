@@ -43,10 +43,12 @@ const Ligas = () => {
         toggleCreateTeamForm,
         nextLeague,
         prevLeague,
-        handleJoinTeam
+        handleJoinTeam,
+        handleGenerateMatches
     } = useLeagues();
 
     const { user, userTeams } = useAuth();
+    const isAdmin = user?.rol === 'ADMIN';
 
     const currentLeague = leagues[currentIndex] || {
         name: '',
@@ -78,7 +80,10 @@ const Ligas = () => {
                         <h2>Grupos</h2>
                         {currentLeague.groups?.map((group, index) => (
                             <div key={index} className="group-container">
-                                <h3>{group.name}</h3>
+                                <div className='group-header'>
+                                    <h3>{group.name}</h3>
+                                    {isAdmin && <button className="generate-button" onClick={() => handleGenerateMatches(group.id)}>Generar partidos</button>}
+                                </div>
                                 {group.teams?.map((team: Team, teamIndex) => {
                                     const isInTeam = userTeams.some(userTeam => userTeam.id === team.id);
                                     const isCaptain = team.captain?.id === user?.id;
@@ -92,7 +97,7 @@ const Ligas = () => {
                                                 <p><strong>Plazas máximas:</strong> {team.max_places}</p>
                                                 <p><strong>Usuarios inscritos:</strong> {team.current_users}</p>
                                             </div>
-                                            {user && !isInTeam && !noPlacesLeft && (
+                                            {user && !isInTeam && !noPlacesLeft && !isAdmin && (
                                                 <button
                                                     className="join-team-button"
                                                     onClick={() => handleJoinTeam(team.id)}
@@ -105,7 +110,7 @@ const Ligas = () => {
                                         </div>
                                     );
                                 })}
-                                {user && (
+                                {user && !isAdmin && (
                                     <>
                                         {!hideCreateButton && (
                                             <button
