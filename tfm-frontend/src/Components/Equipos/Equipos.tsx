@@ -10,12 +10,13 @@ const apiUrl = import.meta.env.VITE_APP_API_URL;
 const Equipos = () => {
     const { userTeams } = useAuth();
     const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
-    const [view, setView] = useState<'list' | 'details'>('list');
-    const [matches, setMatches] = useState<any[]>([]); // Array to hold matches
+    const [view, setView] = useState<'list' | 'details' | 'members'>('list');
+    const [matches, setMatches] = useState<any[]>([]);
+    const [members, setMembers] = useState<any[]>([]);
 
     useEffect(() => {
-        if (selectedTeam) {
-            axios.get(`${apiUrl}/matches/group/${selectedTeam.groupId}`)
+        if (selectedTeam && view === 'details') {
+            axios.get(`${apiUrl}/matches/team/${selectedTeam.id}`)
                 .then(response => {
                     setMatches(response.data);
                 })
@@ -23,7 +24,19 @@ const Equipos = () => {
                     console.error('Error fetching matches:', error);
                 });
         }
-    }, [selectedTeam]);
+    }, [selectedTeam, view]);
+
+    useEffect(() => {
+        if (selectedTeam && view === 'members') {
+            axios.get(`${apiUrl}/teams/${selectedTeam.id}/members`)
+                .then(response => {
+                    setMembers(response.data);
+                })
+                .catch(error => {
+                    console.error('Error fetching team members:', error);
+                });
+        }
+    }, [members, view]);
 
     const handleTeamClick = (team: Team) => {
         setSelectedTeam(team);
@@ -33,6 +46,10 @@ const Equipos = () => {
     const handleBackToList = () => {
         setSelectedTeam(null);
         setView('list');
+    };
+
+    const handleViewChange = (newView: 'details' | 'members' | 'list') => {
+        setView(newView);
     };
 
     return (
@@ -60,41 +77,65 @@ const Equipos = () => {
                     <button className="back-button" onClick={handleBackToList}>Volver a la Lista</button>
                     <h2 className="selected-team-name">{selectedTeam.name}</h2>
                     <div className="team-options">
-                        <button className="team-option">Clasificación</button>
-                        <button className="team-option">Estadísticas</button>
-                        <button className="team-option">Partidos</button>
-                        <button className="team-option">Plantilla</button>
+                        <button className="team-option" onClick={() => handleViewChange('details')}>Clasificación</button>
+                        <button className="team-option" onClick={() => handleViewChange('details')}>Estadísticas</button>
+                        <button className="team-option" onClick={() => handleViewChange('details')}>Partidos</button>
+                        <button className="team-option" onClick={() => handleViewChange('members')}>Plantilla</button>
                     </div>
                     <div className="matches-container">
-                        {Array.isArray(matches) && matches.length > 0 ? (
-                            <div className="matches-container">
-                                <h3 className="matches-title">Próximos Partidos</h3>
-                                <ul className="matches-list">
-                                    {matches.map((match: any, index: number) => (
-                                        <li key={`${match.id}-${match.homeTeam.id}-${match.awayTeam.id}-${index}`} className="match-item">
-                                            <div className="match-info">
-                                                <div className="team-names">
-                                                    <span className="home-team">{match.homeTeam.name}</span>
-                                                    <span className="vs">vs</span>
-                                                    <span className="away-team">{match.awayTeam.name}</span>
-                                                </div>
-                                                <div className="match-details">
-                                                    <p><strong>Fecha:</strong> {match.date}</p>
-                                                    <p><strong>Hora:</strong> {match.time}</p>
-                                                    <p><strong>Lugar:</strong> {match.location}</p>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    ))}
-                                </ul>
+                        <h3 className="matches-title">Próximos Partidos</h3>
+                        <ul className="matches-list">
+                            {matches.map((match: any, index: number) => (
+                                <li key={`${match.id}-${match.homeTeam.id}-${match.awayTeam.id}-${index}`} className="match-item">
+                                    <div className="match-info">
+                                        <div className="team team-home">
+                                            <span className={`team-name ${match.homeTeam.name === selectedTeam.name ? 'bold' : ''}`}>
+                                                {match.homeTeam.name}
+                                            </span>
+                                        </div>
+                                        <div className="match-details">
+                                            <p><strong>Fecha:</strong> {match.date}</p>
+                                            <p><strong>Hora:</strong> {match.time}</p>
+                                            <p><strong>Lugar:</strong> {match.campus.name}</p>
+                                        </div>
+                                        <div className="team team-away">
+                                            <span className={`team-name ${match.awayTeam.name === selectedTeam.name ? 'bold' : ''}`}>
+                                                {match.awayTeam.name}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </div>
+            )}
+            {view === 'members' && selectedTeam && (
+                <div className="team-details-container">
+                    <button className="back-button" onClick={handleBackToList}>Volver a la Lista</button>
+                    <h2 className="selected-team-name">{selectedTeam.name}</h2>
+                    <div className="team-options">
+                        <button className="team-option" onClick={() => handleViewChange('details')}>Clasificación</button>
+                        <button className="team-option" onClick={() => handleViewChange('details')}>Estadísticas</button>
+                        <button className="team-option" onClick={() => handleViewChange('details')}>Partidos</button>
+                        <button className="team-option" onClick={() => handleViewChange('members')}>Plantilla</button>
+                    </div>
+                    <div className="members-container">
+                        {members.length > 0 ? (
+                            <div className="members-list">
+                                {members.map((member: any) => (
+                                    <div key={member.id} className="member-card">
+                                        <h3>{member.name}</h3>
+                                        <p>Facultad: {member.facultad}</p>
+                                    </div>
+                                ))}
                             </div>
                         ) : (
-                            <p className="no-matches">No se encontraron partidos.</p>
+                            <p className="no-members">No se encontraron miembros.</p>
                         )}
                     </div>
                 </div>
             )}
-
         </div>
     );
 };
