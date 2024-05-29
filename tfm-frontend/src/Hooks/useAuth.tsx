@@ -76,6 +76,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 name: data.name,
                 facultad: data.facultad,
                 rol: data.rol,
+                teams: data.teams,
                 token: data.token,
             };
         },

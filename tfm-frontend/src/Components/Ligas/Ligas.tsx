@@ -84,51 +84,84 @@ const Ligas = () => {
                                     <h3>{group.name}</h3>
                                     {isAdmin && <button className="generate-button" onClick={() => handleGenerateMatches(group.id)}>Generar partidos</button>}
                                 </div>
-                                {group.teams?.map((team: Team, teamIndex) => {
-                                    const isInTeam = userTeams.some(userTeam => userTeam.id === team.id);
-                                    const isCaptain = team.captain?.id === user?.id;
-                                    const noPlacesLeft = team.current_users >= team.max_places;
-                                    return (
-                                        <div key={teamIndex} className="team-card">
-                                            <h4 className="team-name">{team.name}</h4>
-                                            <div className="team-details">
-                                                <p><strong>Horario:</strong> {team.schedule}</p>
-                                                <p><strong>Lugar:</strong> {team.location}</p>
-                                                <p><strong>Plazas máximas:</strong> {team.max_places}</p>
-                                                <p><strong>Usuarios inscritos:</strong> {team.current_users}</p>
+                                <div>
+                                    <h2>Tu equipo</h2>
+                                    {group.teams?.filter(team => userTeams.some(userTeam => userTeam.id === team.id)).map((team: Team, teamIndex) => {
+                                        const isInTeam = userTeams.some(userTeam => userTeam.id === team.id);
+                                        const isCaptain = team.captain?.id === user?.id;
+                                        const noPlacesLeft = team.current_users >= team.max_places;
+                                        return (
+                                            <div key={teamIndex} className="team-card">
+                                                <h4 className="team-name">{team.name}</h4>
+                                                <div className="team-details">
+                                                    <p><strong>Horario:</strong> {team.schedule}</p>
+                                                    <p><strong>Lugar:</strong> {team.location}</p>
+                                                    <p><strong>Plazas máximas:</strong> {team.max_places}</p>
+                                                    <p><strong>Usuarios inscritos:</strong> {team.current_users}</p>
+                                                </div>
+                                                {user && !isInTeam && !noPlacesLeft && !isAdmin && userTeams.length === 0 &&(
+                                                    <button
+                                                        className="join-team-button"
+                                                        onClick={() => handleJoinTeam(team.id)}
+                                                        disabled={isInTeam || noPlacesLeft}
+                                                    >
+                                                        {isInTeam ? 'Ya estás en este equipo' : noPlacesLeft ? 'No quedan plazas' : 'Solicitar inscripción'}
+                                                    </button>
+                                                )}
+                                                {isCaptain && <JoinRequests teamId={team.id} />}
                                             </div>
-                                            {user && !isInTeam && !noPlacesLeft && !isAdmin && (
+                                        );
+                                    })}
+                                    {userTeams.length === 0 && user && !isAdmin && (
+                                        <>
+                                            {!hideCreateButton && (
                                                 <button
-                                                    className="join-team-button"
-                                                    onClick={() => handleJoinTeam(team.id)}
-                                                    disabled={isInTeam || noPlacesLeft}
+                                                    className="create-team-button"
+                                                    onClick={() => toggleCreateTeamForm(group.id)}
                                                 >
-                                                    {isInTeam ? 'Ya estás en este equipo' : noPlacesLeft ? 'No quedan plazas' : 'Solicitar inscripción'}
+                                                    Crear Equipo
                                                 </button>
                                             )}
-                                            {isCaptain && <JoinRequests teamId={team.id} />}
-                                        </div>
-                                    );
-                                })}
-                                {user && !isAdmin && (
-                                    <>
-                                        {!hideCreateButton && (
-                                            <button
-                                                className="create-team-button"
-                                                onClick={() => toggleCreateTeamForm(group.id)}
-                                            >
-                                                Crear Equipo
-                                            </button>
-                                        )}
-                                        {showCreateTeamForm[group.id] && (
-                                            <CreateTeamForm
-                                                leagueId={currentLeague.id}
-                                                groupId={group.id}
-                                                onClose={() => toggleCreateTeamForm(group.id)}
-                                            />
-                                        )}
-                                    </>
-                                )}
+                                            {showCreateTeamForm[group.id] && (
+                                                <CreateTeamForm
+                                                    leagueId={currentLeague.id}
+                                                    groupId={group.id}
+                                                    onClose={() => toggleCreateTeamForm(group.id)}
+                                                />
+                                            )}
+                                        </>
+                                    )}
+                                </div>
+
+                                <div>
+                                    <h2>Resto de equipos</h2>
+                                    {group.teams?.filter(team => !userTeams.some(userTeam => userTeam.id === team.id)).map((team: Team, teamIndex) => {
+                                        const isInTeam = userTeams.some(userTeam => userTeam.id === team.id);
+                                        const isCaptain = team.captain?.id === user?.id;
+                                        const noPlacesLeft = team.current_users >= team.max_places;
+                                        return (
+                                            <div key={teamIndex} className="team-card">
+                                                <h4 className="team-name">{team.name}</h4>
+                                                <div className="team-details">
+                                                    <p><strong>Horario:</strong> {team.schedule}</p>
+                                                    <p><strong>Lugar:</strong> {team.location}</p>
+                                                    <p><strong>Plazas máximas:</strong> {team.max_places}</p>
+                                                    <p><strong>Usuarios inscritos:</strong> {team.current_users}</p>
+                                                </div>
+                                                {user && !isInTeam && !noPlacesLeft && !isAdmin && (
+                                                    <button
+                                                        className="join-team-button"
+                                                        onClick={() => handleJoinTeam(team.id)}
+                                                        disabled={isInTeam || noPlacesLeft}
+                                                    >
+                                                        {isInTeam ? 'Ya estás en este equipo' : noPlacesLeft ? 'No quedan plazas' : 'Solicitar inscripción'}
+                                                    </button>
+                                                )}
+                                                {isCaptain && <JoinRequests teamId={team.id} />}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
                             </div>
                         ))}
                     </div>
