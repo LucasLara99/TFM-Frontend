@@ -7,5 +7,6 @@ export interface Team {
     location: string;
     max_places: number;
     current_users: number;
+    groupId?: number;
     captain?: User;
 }

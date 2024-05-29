@@ -23,6 +23,11 @@
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.equipo-card:hover {
+    transform: scale(1.01);
 }
 
 .equipo-name {
@@ -40,4 +45,119 @@
 .equipo-details strong {
     font-weight: bold;
     color: #fff;
+}
+
+.team-details-container {
+    width: 80%;
+    margin: 2em auto;
+    text-align: center;
+    padding-top: 2em;
+    padding-bottom: 2em;
+    background: #f9f9f9;
+    background-color: #D60D8C;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.back-button {
+    display: flex;
+    margin-left: 1.5em;
+    padding: 0.7em 1.5em;
+    background-color: #fff;
+    color: #D60D8C;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.back-button:hover {
+    transform: scale(1.01);
+}
+
+.selected-team-name {
+    margin-top: 0.1em;
+    color: #fff;
+    font-size: 2.5em;
+    font-weight: bold;
+}
+
+.team-options {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1em;
+}
+
+.team-option {
+    display: inline-block;
+    margin: 0.5em;
+    padding: 1em 2em;
+    color: #D60D8C;
+    background-color: #fff;
+    border: 2px solid #D60D8C;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.team-option:hover {
+    transform: scale(1.01);
+}
+
+.team-option:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(214, 13, 140, 0.5);
+}
+
+.matches-container {
+    margin-top: 2em;
+}
+
+.matches-title {
+    font-size: 1.5em;
+    margin-bottom: 1em;
+    color: #D60D8C;
+}
+
+.matches-list {
+    list-style: none;
+    padding: 0;
+}
+
+.match-item {
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1em;
+}
+
+.match-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1em;
+}
+
+.team-names {
+    display: flex;
+    align-items: center;
+}
+
+.home-team,
+.vs,
+.away-team {
+    margin: 0 0.5em;
+    color: #D60D8C;
+}
+
+.match-details p {
+    margin: 0.3em 0;
+}
+
+.no-matches {
+    color: #fff;
+    font-style: italic;
 }
