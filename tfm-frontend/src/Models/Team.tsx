@@ -5,8 +5,8 @@ export interface Team {
     name: string;
     schedule: string;
     location: string;
-    max_places: number;
-    current_users: number;
+    maxPlaces: number;
+    currentUsers: number;
     groupId?: number;
     captain?: User;
 }

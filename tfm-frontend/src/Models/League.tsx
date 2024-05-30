@@ -13,8 +13,8 @@ export interface League {
             name: string,
             schedule: string,
             location: string,
-            max_places: number,
-            current_users: number,
+            maxPlaces: number,
+            currentUsers: number,
             status: string
         }>
     }>;

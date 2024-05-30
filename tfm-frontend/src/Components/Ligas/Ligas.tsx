@@ -49,6 +49,7 @@ const Ligas = () => {
 
     const { user, userTeams } = useAuth();
     const isAdmin = user?.rol === 'ADMIN';
+    const userHasTeamInGroup: boolean = userTeams.some(team => team.groupId === leagues[currentIndex]?.groups[0]?.id);
 
     const currentLeague = leagues[currentIndex] || {
         name: '',
@@ -59,6 +60,7 @@ const Ligas = () => {
         registration: [],
         groups: []
     };
+
 
     return (
         <div className="ligas-main-page">
@@ -89,15 +91,15 @@ const Ligas = () => {
                                     {group.teams?.filter(team => userTeams.some(userTeam => userTeam.id === team.id)).map((team: Team, teamIndex) => {
                                         const isInTeam = userTeams.some(userTeam => userTeam.id === team.id);
                                         const isCaptain = team.captain?.id === user?.id;
-                                        const noPlacesLeft = team.current_users >= team.max_places;
+                                        const noPlacesLeft = team.currentUsers >= team.maxPlaces;
                                         return (
                                             <div key={teamIndex} className="team-card">
                                                 <h4 className="team-name">{team.name}</h4>
                                                 <div className="team-details">
                                                     <p><strong>Horario:</strong> {team.schedule}</p>
                                                     <p><strong>Lugar:</strong> {team.location}</p>
-                                                    <p><strong>Plazas máximas:</strong> {team.max_places}</p>
-                                                    <p><strong>Usuarios inscritos:</strong> {team.current_users}</p>
+                                                    <p><strong>Plazas máximas:</strong> {team.maxPlaces}</p>
+                                                    <p><strong>Usuarios inscritos:</strong> {team.currentUsers}</p>
                                                 </div>
                                                 {user && !isInTeam && !noPlacesLeft && !isAdmin && userTeams.length === 0 &&(
                                                     <button
@@ -112,7 +114,7 @@ const Ligas = () => {
                                             </div>
                                         );
                                     })}
-                                    {userTeams.length === 0 && user && !isAdmin && (
+                                    {!userHasTeamInGroup && user && !isAdmin && (
                                         <>
                                             {!hideCreateButton && (
                                                 <button
@@ -138,15 +140,15 @@ const Ligas = () => {
                                     {group.teams?.filter(team => !userTeams.some(userTeam => userTeam.id === team.id)).map((team: Team, teamIndex) => {
                                         const isInTeam = userTeams.some(userTeam => userTeam.id === team.id);
                                         const isCaptain = team.captain?.id === user?.id;
-                                        const noPlacesLeft = team.current_users >= team.max_places;
+                                        const noPlacesLeft = team.currentUsers >= team.maxPlaces;
                                         return (
                                             <div key={teamIndex} className="team-card">
                                                 <h4 className="team-name">{team.name}</h4>
                                                 <div className="team-details">
                                                     <p><strong>Horario:</strong> {team.schedule}</p>
                                                     <p><strong>Lugar:</strong> {team.location}</p>
-                                                    <p><strong>Plazas máximas:</strong> {team.max_places}</p>
-                                                    <p><strong>Usuarios inscritos:</strong> {team.current_users}</p>
+                                                    <p><strong>Plazas máximas:</strong> {team.maxPlaces}</p>
+                                                    <p><strong>Usuarios inscritos:</strong> {team.currentUsers}</p>
                                                 </div>
                                                 {user && !isInTeam && !noPlacesLeft && !isAdmin && (
                                                     <button

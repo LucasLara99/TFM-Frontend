@@ -99,7 +99,7 @@ export const useLeagues = () => {
             alert('Solicitud enviada exitosamente.');
         } catch (error) {
             console.error('Error sending join request:', error);
-            alert('Error al enviar la solicitud. Inténtalo de nuevo más tarde.');
+            alert('No puedes unirte al equipo porque ya estas en uno');
         }
     };
 

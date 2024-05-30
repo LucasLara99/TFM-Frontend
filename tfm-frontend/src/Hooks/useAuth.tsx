@@ -13,9 +13,10 @@ interface AuthContextData {
     logout: () => void;
     loading: boolean;
     userTeams: Team[];
+    setUserTeams: (teams: Team[]) => void;
 }
 
-const AuthContext = createContext<AuthContextData | undefined>(undefined);
+export const AuthContext = createContext<AuthContextData | undefined>(undefined);
 
 interface AuthProviderProps {
     children: ReactNode;
@@ -102,7 +103,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, loading, userTeams }}>
+        <AuthContext.Provider value={{ user, login, logout, loading, userTeams, setUserTeams }}>
             {children}
         </AuthContext.Provider>
     );

@@ -64,8 +64,8 @@ const Equipos = () => {
                                 <div className="equipo-details">
                                     <p><strong>Horario:</strong> {team.schedule}</p>
                                     <p><strong>Ubicación:</strong> {team.location}</p>
-                                    <p><strong>Plazas Máximas:</strong> {team.max_places}</p>
-                                    <p><strong>Usuarios Inscritos:</strong> {team.current_users}</p>
+                                    <p><strong>Plazas Máximas:</strong> {team.maxPlaces}</p>
+                                    <p><strong>Usuarios Inscritos:</strong> {team.currentUsers}</p>
                                 </div>
                             </div>
                         ))}

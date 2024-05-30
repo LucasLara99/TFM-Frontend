@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../Hooks/useAuth';
 import './CreateTeamForm.css';
+import { AuthContext } from '../../Hooks/useAuth';
 
 const apiUrl = import.meta.env.VITE_APP_API_URL;
 
@@ -9,8 +10,14 @@ const CreateTeamForm = ({ leagueId, groupId, onClose }: { leagueId: number; grou
     const [teamName, setTeamName] = useState('');
     const [schedule, setSchedule] = useState('');
     const [location, setLocation] = useState('');
-    const [max_places, setMaxPlaces] = useState('');
-    const { user } = useAuth();
+    const [maxPlaces, setMaxPlaces] = useState('');
+    const { user, userTeams } = useAuth();
+
+    const authContext = useContext(AuthContext);
+    if (!authContext) {
+        throw new Error('Auth context is undefined');
+    }
+    const { setUserTeams } = authContext;
 
     const handleCreateTeam = async (event: { preventDefault: () => void; }) => {
         event.preventDefault();
@@ -20,9 +27,9 @@ const CreateTeamForm = ({ leagueId, groupId, onClose }: { leagueId: number; grou
             return;
         }
 
-        const maxPlacesValue = parseInt(max_places);
+        const maxPlacesValue = parseInt(maxPlaces);
 
-        if (isNaN(maxPlacesValue) || maxPlacesValue < 0 ) {
+        if (isNaN(maxPlacesValue) || maxPlacesValue < 0) {
             alert("El número máximo de plazas no puede ser negativo.");
             return;
         }
@@ -32,18 +39,22 @@ const CreateTeamForm = ({ leagueId, groupId, onClose }: { leagueId: number; grou
                 name: teamName,
                 schedule,
                 location,
-                max_places: maxPlacesValue,
+                maxPlaces: maxPlacesValue,
             },
             userId: user.id,
         };
 
         try {
-            await axios.post(`${apiUrl}/leagues/${leagueId}/groups/${groupId}/teams`, newTeam, {
+            const response = await axios.post(`${apiUrl}/leagues/${leagueId}/groups/${groupId}/teams`, newTeam, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
             });
+            const createdTeam = response.data;
+            const newTeams = [...userTeams, createdTeam];
+            setUserTeams(newTeams);
             onClose();
+            window.location.reload();
         } catch (error) {
             console.error('Error creating team:', error);
         }
@@ -84,7 +95,7 @@ const CreateTeamForm = ({ leagueId, groupId, onClose }: { leagueId: number; grou
                     <label>Máximo de Plazas</label>
                     <input
                         type="text"
-                        value={max_places}
+                        value={maxPlaces}
                         onChange={(e) => setMaxPlaces(e.target.value)}
                         required
                     />
