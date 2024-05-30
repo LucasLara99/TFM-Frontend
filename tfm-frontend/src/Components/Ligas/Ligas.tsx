@@ -49,7 +49,8 @@ const Ligas = () => {
 
     const { user, userTeams } = useAuth();
     const isAdmin = user?.rol === 'ADMIN';
-    const userHasTeamInGroup: boolean = userTeams.some(team => team.groupId === leagues[currentIndex]?.groups[0]?.id);
+    let userHasTeamInLeague: boolean = false;
+    let userTeamGroup: number;
 
     const currentLeague = leagues[currentIndex] || {
         name: '',
@@ -61,6 +62,13 @@ const Ligas = () => {
         groups: []
     };
 
+    for (let group of currentLeague.groups) {
+        if (userTeams.some(team => team.groupId === group.id)) {
+            userTeamGroup = group.id;
+            userHasTeamInLeague = true;
+            break;
+        }
+    }
 
     return (
         <div className="ligas-main-page">
@@ -87,7 +95,7 @@ const Ligas = () => {
                                     {isAdmin && <button className="generate-button" onClick={() => handleGenerateMatches(group.id)}>Generar partidos</button>}
                                 </div>
                                 <div>
-                                    <h2>Tu equipo</h2>
+                                    {userTeamGroup === group.id && <h2>Tu equipo</h2>}
                                     {group.teams?.filter(team => userTeams.some(userTeam => userTeam.id === team.id)).map((team: Team, teamIndex) => {
                                         const isInTeam = userTeams.some(userTeam => userTeam.id === team.id);
                                         const isCaptain = team.captain?.id === user?.id;
@@ -101,7 +109,7 @@ const Ligas = () => {
                                                     <p><strong>Plazas máximas:</strong> {team.maxPlaces}</p>
                                                     <p><strong>Usuarios inscritos:</strong> {team.currentUsers}</p>
                                                 </div>
-                                                {user && !isInTeam && !noPlacesLeft && !isAdmin && userTeams.length === 0 &&(
+                                                {user && !isInTeam && !noPlacesLeft && !isAdmin && userTeams.length === 0 && (
                                                     <button
                                                         className="join-team-button"
                                                         onClick={() => handleJoinTeam(team.id)}
@@ -114,7 +122,7 @@ const Ligas = () => {
                                             </div>
                                         );
                                     })}
-                                    {!userHasTeamInGroup && user && !isAdmin && (
+                                    {!userHasTeamInLeague && user && !isAdmin && (
                                         <>
                                             {!hideCreateButton && (
                                                 <button
@@ -136,7 +144,8 @@ const Ligas = () => {
                                 </div>
 
                                 <div>
-                                    <h2>Resto de equipos</h2>
+                                    {userTeamGroup === group.id && <h2>Resto de equipos</h2>}
+
                                     {group.teams?.filter(team => !userTeams.some(userTeam => userTeam.id === team.id)).map((team: Team, teamIndex) => {
                                         const isInTeam = userTeams.some(userTeam => userTeam.id === team.id);
                                         const isCaptain = team.captain?.id === user?.id;
