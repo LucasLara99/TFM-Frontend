@@ -174,8 +174,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1em;
+    padding: 0.2em 1em 0.2em 1em;
 }
+
+.ADMIN.match-item:hover {
+    background-color: #e4e4e4;
+  }
 
 .match-info {
     display: flex;
@@ -280,4 +284,63 @@
     color: #D60D8C;
     font-style: italic;
     text-align: center;
+}
+
+.edit-match-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgb(255, 255, 255);
+    padding: 2em;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    border-radius: 10px;
+}
+
+.edit-match-modal h2 {
+    margin-top: 0;
+    color: #D60D8C;
+}
+
+.edit-match-modal form {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+.edit-match-modal label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+}
+
+.edit-match-modal input {
+    padding: 0.5em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    color: #fff;
+    background-color: #D60D8C;
+}
+
+.edit-match-modal button {
+    padding: 0.7em 1.5em;
+    background-color: #D60D8C;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.edit-match-modal button:hover {
+    background-color: #A52A86;
+}
+
+.edit-match-modal button[type="button"] {
+    background-color: #a8a8a8;
+}
+
+.edit-match-modal button[type="button"]:hover {
+    background-color: #999;
 }

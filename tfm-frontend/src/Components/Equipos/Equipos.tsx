@@ -8,11 +8,31 @@ import axios from 'axios';
 const apiUrl = import.meta.env.VITE_APP_API_URL;
 
 const Equipos = () => {
-    const { userTeams } = useAuth();
+    const { user } = useAuth(); // Asegúrate de tener acceso al usuario
+    const [teams, setTeams] = useState<Team[]>([]);
     const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
     const [view, setView] = useState<'list' | 'clasificacion' | 'estadisticas' | 'partidos' | 'plantilla'>('list');
     const [matches, setMatches] = useState<any[]>([]);
     const [members, setMembers] = useState<any[]>([]);
+    const [editMatch, setEditMatch] = useState<any | null>(null);
+
+    useEffect(() => {
+        const fetchTeams = async () => {
+            try {
+                if (user!.rol === 'ADMIN') {
+                    const response = await axios.get(`${apiUrl}/teams/getall`);
+                    setTeams(response.data);
+                } else {
+                    const response = await axios.get(`${apiUrl}/users/${user!.id}/teams`);
+                    setTeams(response.data);
+                }
+            } catch (error) {
+                console.error('Error fetching teams:', error);
+            }
+        };
+
+        fetchTeams();
+    }, [user]);
 
     useEffect(() => {
         if (selectedTeam && view === 'partidos') {
@@ -36,7 +56,7 @@ const Equipos = () => {
                     console.error('Error fetching team members:', error);
                 });
         }
-    }, [members, view]);
+    }, [selectedTeam, view]);
 
     const handleTeamClick = (team: Team) => {
         setSelectedTeam(team);
@@ -52,13 +72,38 @@ const Equipos = () => {
         setView(newView);
     };
 
+    const handleEditMatch = (match: any) => {
+        setEditMatch(match);
+    };
+
+    const handleUpdateMatch = (e: any) => {
+        e.preventDefault();
+        axios.put(`${apiUrl}/matches/${editMatch.id}`, editMatch)
+            .then(response => {
+                console.log(editMatch)
+                setEditMatch(null);
+                setMatches(matches.map(m => m.id === response.data.id ? response.data : m));
+            })
+            .catch(error => {
+                console.error('Error updating match:', error);
+            });
+    };
+
+    const handleChange = (e: any) => {
+        const { name, value } = e.target;
+        setEditMatch({
+            ...editMatch,
+            [name]: value
+        });
+    };
+
     return (
         <div className='equipos-main-page'>
             <Header />
             {view === 'list' && (
                 <div className="equipos-container">
                     <div className="equipos-list">
-                        {userTeams.map((team: Team) => (
+                        {teams.map((team: Team) => (
                             <div key={team.id} className="equipo-card" onClick={() => handleTeamClick(team)}>
                                 <h3 className="equipo-name">{team.name}</h3>
                                 <div className="equipo-details">
@@ -72,7 +117,7 @@ const Equipos = () => {
                     </div>
                 </div>
             )}
-            {view === 'clasificacion' && selectedTeam && (
+            {view !== 'list' && selectedTeam && (
                 <div className="team-details-container">
                     <div className='team-details-header'>
                         <button className="back-button" onClick={handleBackToList}>Volver a la Lista</button>
@@ -84,90 +129,85 @@ const Equipos = () => {
                         <button className="team-option" onClick={() => handleViewChange('partidos')}>Partidos</button>
                         <button className="team-option" onClick={() => handleViewChange('plantilla')}>Plantilla</button>
                     </div>
-                </div>
-            )}
-            {view === 'estadisticas' && selectedTeam && (
-                <div className="team-details-container">
-                    <div className='team-details-header'>
-                        <button className="back-button" onClick={handleBackToList}>Volver a la Lista</button>
-                        <h2 className="selected-team-name">{selectedTeam.name}</h2>
-                    </div>
-                    <div className="team-options">
-                        <button className="team-option" onClick={() => handleViewChange('clasificacion')}>Clasificación</button>
-                        <button className="team-option" onClick={() => handleViewChange('estadisticas')}>Estadísticas</button>
-                        <button className="team-option" onClick={() => handleViewChange('partidos')}>Partidos</button>
-                        <button className="team-option" onClick={() => handleViewChange('plantilla')}>Plantilla</button>
-                    </div>
-                </div>
-            )}
-            {view === 'partidos' && selectedTeam && (
-                <div className="team-details-container">
-                    <div className='team-details-header'>
-                        <button className="back-button" onClick={handleBackToList}>Volver a la Lista</button>
-                        <h2 className="selected-team-name">{selectedTeam.name}</h2>
-                    </div>
-                    <div className="team-options">
-                        <button className="team-option" onClick={() => handleViewChange('clasificacion')}>Clasificación</button>
-                        <button className="team-option" onClick={() => handleViewChange('estadisticas')}>Estadísticas</button>
-                        <button className="team-option" onClick={() => handleViewChange('partidos')}>Partidos</button>
-                        <button className="team-option" onClick={() => handleViewChange('plantilla')}>Plantilla</button>
-                    </div>
-                    <div className="matches-container">
-                        <h3 className="matches-title">Próximos Partidos</h3>
-                        <ul className="matches-list">
-                            {matches.map((match: any, index: number) => (
-                                <li key={`${match.id}-${match.homeTeam.id}-${match.awayTeam.id}-${index}`} className="match-item">
-                                    <div className="match-info">
-                                        <div className="team team-home">
-                                            <span className={`team-name ${match.homeTeam.name === selectedTeam.name ? 'bold' : ''}`}>
-                                                {match.homeTeam.name}
-                                            </span>
-                                            <p className='match-score'>{match.homeTeamResult}</p>
+                    {view === 'partidos' && (
+                        <div className="matches-container">
+                            <ul className="matches-list">
+                                {matches.map((match: any, index: number) => (
+                                    <li
+                                        key={`${match.id}-${match.homeTeam.id}-${match.awayTeam.id}-${index}`}
+                                        className={`match-item ${user!.rol === 'ADMIN' ? 'ADMIN' : ''}`}
+                                        onClick={user!.rol === 'ADMIN' ? () => handleEditMatch(match) : undefined}
+                                        style={user!.rol === 'ADMIN' ? { cursor: 'pointer' } : undefined}
+                                    >
+                                        <div className="match-info">
+                                            <div className="team team-home">
+                                                <span className={`team-name ${match.homeTeam.name === selectedTeam.name ? 'bold' : ''}`}>
+                                                    {match.homeTeam.name}
+                                                </span>
+                                                <p className='match-score'>{match.homeTeamResult}</p>
+                                            </div>
+                                            <div className="match-details">
+                                                <p>{match.date}</p>
+                                                <p>{match.time}</p>
+                                                <p>{match.campus.name}</p>
+                                            </div>
+                                            <div className="team team-away">
+                                                <p className='match-score'>{match.awayTeamResult}</p>
+                                                <span className={`team-name ${match.awayTeam.name === selectedTeam.name ? 'bold' : ''}`}>
+                                                    {match.awayTeam.name}
+                                                </span>
+                                            </div>
                                         </div>
-                                        <div className="match-details">
-                                            <p>{match.date}</p>
-                                            <p>{match.time}</p>
-                                            <p>{match.campus.name}</p>
-                                        </div>
-                                        <div className="team team-away">
-                                            <p className='match-score'>{match.homeTeamResult}</p>
-                                            <span className={`team-name ${match.awayTeam.name === selectedTeam.name ? 'bold' : ''}`}>
-                                                {match.awayTeam.name}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                </div>
-            )}
-            {view === 'plantilla' && selectedTeam && (
-                <div className="team-details-container">
-                    <div className='team-details-header'>
-                        <button className="back-button" onClick={handleBackToList}>Volver a la Lista</button>
-                        <h2 className="selected-team-name">{selectedTeam.name}</h2>
-                    </div>
-                    <div className="team-options">
-                        <button className="team-option" onClick={() => handleViewChange('clasificacion')}>Clasificación</button>
-                        <button className="team-option" onClick={() => handleViewChange('estadisticas')}>Estadísticas</button>
-                        <button className="team-option" onClick={() => handleViewChange('partidos')}>Partidos</button>
-                        <button className="team-option" onClick={() => handleViewChange('plantilla')}>Plantilla</button>
-                    </div>
-                    <div className="members-container">
-                        {members.length > 0 ? (
-                            <div className="members-list">
-                                {members.map((member: any) => (
-                                    <div key={member.id} className="member-card">
-                                        <h3>{member.name}</h3>
-                                        <p>Facultad: {member.facultad}</p>
-                                    </div>
+                                    </li>
                                 ))}
-                            </div>
-                        ) : (
-                            <p className="no-members">No se encontraron miembros.</p>
-                        )}
-                    </div>
+                            </ul>
+                        </div>
+                    )}
+                    {view === 'plantilla' && (
+                        <div className="members-container">
+                            {members.length > 0 ? (
+                                <div className="members-list">
+                                    {members.map((member: any) => (
+                                        <div key={member.id} className="member-card">
+                                            <h3>{member.name}</h3>
+                                            <p>Facultad: {member.facultad}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p className="no-members">No se encontraron miembros.</p>
+                            )}
+                        </div>
+                    )}
+                </div>
+            )}
+            {editMatch && (
+                <div className="edit-match-modal">
+                    <h2>Editar Partido</h2>
+                    <form onSubmit={handleUpdateMatch}>
+                        <label>
+                            Fecha:
+                            <input type="date" name="date" value={editMatch.date} onChange={handleChange} />
+                        </label>
+                        <label>
+                            Hora:
+                            <input type="time" name="time" value={editMatch.time} onChange={handleChange} />
+                        </label>
+                        <label>
+                            Ubicación:
+                            <input type="text" name="location" value={editMatch.campus.name} onChange={handleChange} />
+                        </label>
+                        <label>
+                            Resultado Local:
+                            <input type="number" name="homeTeamResult" value={editMatch.homeTeamResult} onChange={handleChange} />
+                        </label>
+                        <label>
+                            Resultado Visitante:
+                            <input type="number" name="awayTeamResult" value={editMatch.awayTeamResult} onChange={handleChange} />
+                        </label>
+                        <button type="submit">Guardar Cambios</button>
+                        <button type="button" onClick={() => setEditMatch(null)}>Cancelar</button>
+                    </form>
                 </div>
             )}
         </div>
