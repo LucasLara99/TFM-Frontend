@@ -92,13 +92,15 @@ const Equipos = () => {
                                             <span className={`team-name ${match.homeTeam.name === selectedTeam.name ? 'bold' : ''}`}>
                                                 {match.homeTeam.name}
                                             </span>
+                                            <p className='match-score'>{match.homeTeamResult}</p>
                                         </div>
                                         <div className="match-details">
-                                            <p><strong>Fecha:</strong> {match.date}</p>
-                                            <p><strong>Hora:</strong> {match.time}</p>
-                                            <p><strong>Lugar:</strong> {match.campus.name}</p>
+                                            <p>{match.date}</p>
+                                            <p>{match.time}</p>
+                                            <p>{match.campus.name}</p>
                                         </div>
                                         <div className="team team-away">
+                                            <p className='match-score'>{match.homeTeamResult}</p>
                                             <span className={`team-name ${match.awayTeam.name === selectedTeam.name ? 'bold' : ''}`}>
                                                 {match.awayTeam.name}
                                             </span>

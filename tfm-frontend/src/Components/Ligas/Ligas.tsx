@@ -102,7 +102,7 @@ const Ligas = () => {
                                         const noPlacesLeft = team.currentUsers >= team.maxPlaces;
                                         return (
                                             <div key={teamIndex} className="team-card">
-                                                <h4 className="team-name">{team.name}</h4>
+                                                <h4 className="leagues-team-name">{team.name}</h4>
                                                 <div className="team-details">
                                                     <p><strong>Horario:</strong> {team.schedule}</p>
                                                     <p><strong>Lugar:</strong> {team.location}</p>
@@ -152,7 +152,7 @@ const Ligas = () => {
                                         const noPlacesLeft = team.currentUsers >= team.maxPlaces;
                                         return (
                                             <div key={teamIndex} className="team-card">
-                                                <h4 className="team-name">{team.name}</h4>
+                                                <h4 className="leagues-team-name">{team.name}</h4>
                                                 <div className="team-details">
                                                     <p><strong>Horario:</strong> {team.schedule}</p>
                                                     <p><strong>Lugar:</strong> {team.location}</p>
