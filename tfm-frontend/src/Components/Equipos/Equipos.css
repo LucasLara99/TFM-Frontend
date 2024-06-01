@@ -53,7 +53,6 @@
     overflow-y: auto;
     margin: 2em auto;
     text-align: center;
-    padding-top: 2em;
     padding-bottom: 2em;
     background: #D60D8C;
     border-radius: 10px;
@@ -72,6 +71,21 @@
     background: #da4da6;
 }
 
+.team-details-header {
+    position: relative;
+    text-align: center;
+  }
+  
+  .team-details-header .back-button {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  
+  .team-details-header .selected-team-name {
+    display: inline-block;
+  }
 
 .back-button {
     display: flex;
@@ -92,7 +106,6 @@
 }
 
 .selected-team-name {
-    margin-top: 0.1em;
     color: #fff;
     font-size: 2.5em;
     font-weight: bold;
@@ -106,6 +119,7 @@
 }
 
 .team-option {
+    width: 10em;
     display: inline-block;
     margin: 0.5em;
     padding: 1em 2em;
@@ -176,7 +190,6 @@
 }
 
 .match-score {
-    flex: 1;
     text-align: center;
     font-size: 1.5em;
     font-weight: bold;
@@ -188,6 +201,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: space-between;
 }
 
 .team-away {
@@ -195,16 +209,18 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: space-between;
 }
 
 .team-name {
     font-size: 1.2em;
     color: #D60D8C;
+    margin: 0 0.5em 0 0.5em;
 }
 
 .match-details {
-    flex: 2;
     text-align: center;
+    margin: 0 3em 0 3em;
 }
 
 .match-details p {

@@ -10,12 +10,12 @@ const apiUrl = import.meta.env.VITE_APP_API_URL;
 const Equipos = () => {
     const { userTeams } = useAuth();
     const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
-    const [view, setView] = useState<'list' | 'details' | 'members'>('list');
+    const [view, setView] = useState<'list' | 'clasificacion' | 'estadisticas' | 'partidos' | 'plantilla'>('list');
     const [matches, setMatches] = useState<any[]>([]);
     const [members, setMembers] = useState<any[]>([]);
 
     useEffect(() => {
-        if (selectedTeam && view === 'details') {
+        if (selectedTeam && view === 'partidos') {
             axios.get(`${apiUrl}/matches/team/${selectedTeam.id}`)
                 .then(response => {
                     setMatches(response.data);
@@ -27,7 +27,7 @@ const Equipos = () => {
     }, [selectedTeam, view]);
 
     useEffect(() => {
-        if (selectedTeam && view === 'members') {
+        if (selectedTeam && view === 'plantilla') {
             axios.get(`${apiUrl}/teams/${selectedTeam.id}/members`)
                 .then(response => {
                     setMembers(response.data);
@@ -40,7 +40,7 @@ const Equipos = () => {
 
     const handleTeamClick = (team: Team) => {
         setSelectedTeam(team);
-        setView('details');
+        setView('clasificacion');
     };
 
     const handleBackToList = () => {
@@ -48,7 +48,7 @@ const Equipos = () => {
         setView('list');
     };
 
-    const handleViewChange = (newView: 'details' | 'members' | 'list') => {
+    const handleViewChange = (newView: 'list' | 'clasificacion' | 'estadisticas' | 'partidos' | 'plantilla') => {
         setView(newView);
     };
 
@@ -72,15 +72,45 @@ const Equipos = () => {
                     </div>
                 </div>
             )}
-            {view === 'details' && selectedTeam && (
+            {view === 'clasificacion' && selectedTeam && (
                 <div className="team-details-container">
-                    <button className="back-button" onClick={handleBackToList}>Volver a la Lista</button>
-                    <h2 className="selected-team-name">{selectedTeam.name}</h2>
+                    <div className='team-details-header'>
+                        <button className="back-button" onClick={handleBackToList}>Volver a la Lista</button>
+                        <h2 className="selected-team-name">{selectedTeam.name}</h2>
+                    </div>
                     <div className="team-options">
-                        <button className="team-option" onClick={() => handleViewChange('details')}>Clasificación</button>
-                        <button className="team-option" onClick={() => handleViewChange('details')}>Estadísticas</button>
-                        <button className="team-option" onClick={() => handleViewChange('details')}>Partidos</button>
-                        <button className="team-option" onClick={() => handleViewChange('members')}>Plantilla</button>
+                        <button className="team-option" onClick={() => handleViewChange('clasificacion')}>Clasificación</button>
+                        <button className="team-option" onClick={() => handleViewChange('estadisticas')}>Estadísticas</button>
+                        <button className="team-option" onClick={() => handleViewChange('partidos')}>Partidos</button>
+                        <button className="team-option" onClick={() => handleViewChange('plantilla')}>Plantilla</button>
+                    </div>
+                </div>
+            )}
+            {view === 'estadisticas' && selectedTeam && (
+                <div className="team-details-container">
+                    <div className='team-details-header'>
+                        <button className="back-button" onClick={handleBackToList}>Volver a la Lista</button>
+                        <h2 className="selected-team-name">{selectedTeam.name}</h2>
+                    </div>
+                    <div className="team-options">
+                        <button className="team-option" onClick={() => handleViewChange('clasificacion')}>Clasificación</button>
+                        <button className="team-option" onClick={() => handleViewChange('estadisticas')}>Estadísticas</button>
+                        <button className="team-option" onClick={() => handleViewChange('partidos')}>Partidos</button>
+                        <button className="team-option" onClick={() => handleViewChange('plantilla')}>Plantilla</button>
+                    </div>
+                </div>
+            )}
+            {view === 'partidos' && selectedTeam && (
+                <div className="team-details-container">
+                    <div className='team-details-header'>
+                        <button className="back-button" onClick={handleBackToList}>Volver a la Lista</button>
+                        <h2 className="selected-team-name">{selectedTeam.name}</h2>
+                    </div>
+                    <div className="team-options">
+                        <button className="team-option" onClick={() => handleViewChange('clasificacion')}>Clasificación</button>
+                        <button className="team-option" onClick={() => handleViewChange('estadisticas')}>Estadísticas</button>
+                        <button className="team-option" onClick={() => handleViewChange('partidos')}>Partidos</button>
+                        <button className="team-option" onClick={() => handleViewChange('plantilla')}>Plantilla</button>
                     </div>
                     <div className="matches-container">
                         <h3 className="matches-title">Próximos Partidos</h3>
@@ -112,15 +142,17 @@ const Equipos = () => {
                     </div>
                 </div>
             )}
-            {view === 'members' && selectedTeam && (
+            {view === 'plantilla' && selectedTeam && (
                 <div className="team-details-container">
-                    <button className="back-button" onClick={handleBackToList}>Volver a la Lista</button>
-                    <h2 className="selected-team-name">{selectedTeam.name}</h2>
+                    <div className='team-details-header'>
+                        <button className="back-button" onClick={handleBackToList}>Volver a la Lista</button>
+                        <h2 className="selected-team-name">{selectedTeam.name}</h2>
+                    </div>
                     <div className="team-options">
-                        <button className="team-option" onClick={() => handleViewChange('details')}>Clasificación</button>
-                        <button className="team-option" onClick={() => handleViewChange('details')}>Estadísticas</button>
-                        <button className="team-option" onClick={() => handleViewChange('details')}>Partidos</button>
-                        <button className="team-option" onClick={() => handleViewChange('members')}>Plantilla</button>
+                        <button className="team-option" onClick={() => handleViewChange('clasificacion')}>Clasificación</button>
+                        <button className="team-option" onClick={() => handleViewChange('estadisticas')}>Estadísticas</button>
+                        <button className="team-option" onClick={() => handleViewChange('partidos')}>Partidos</button>
+                        <button className="team-option" onClick={() => handleViewChange('plantilla')}>Plantilla</button>
                     </div>
                     <div className="members-container">
                         {members.length > 0 ? (
