@@ -15,6 +15,9 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     grid-gap: 1em;
+    padding: 1em;
+    height: 70vh;
+    overflow-y: auto;
 }
 
 .equipo-card {
@@ -49,11 +52,11 @@
 
 .team-details-container {
     width: 80%;
-    height: 70vh;
+    height: 76vh;
     overflow-y: auto;
-    margin: 2em auto;
+    margin: 1.5em auto;
     text-align: center;
-    padding-bottom: 2em;
+    padding-bottom: 1em;
     background: #D60D8C;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -115,14 +118,13 @@
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 1em;
+    gap: 1.5em;
 }
 
 .team-option {
     width: 10em;
     display: inline-block;
-    margin: 0.5em;
-    padding: 1em 2em;
+    padding: 0.6em;
     color: #D60D8C;
     background-color: #fff;
     border: 2px solid #D60D8C;
@@ -143,13 +145,7 @@
 }
 
 .matches-container {
-    margin-top: 2em;
-}
-
-.matches-title {
-    font-size: 1.5em;
-    margin-bottom: 1em;
-    color: #fff;
+    margin-top: 1em;
 }
 
 .bold {

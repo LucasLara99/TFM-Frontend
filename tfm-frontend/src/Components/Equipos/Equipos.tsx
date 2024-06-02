@@ -8,13 +8,21 @@ import axios from 'axios';
 const apiUrl = import.meta.env.VITE_APP_API_URL;
 
 const Equipos = () => {
-    const { user } = useAuth(); // Asegúrate de tener acceso al usuario
+    const { user } = useAuth();
     const [teams, setTeams] = useState<Team[]>([]);
     const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
     const [view, setView] = useState<'list' | 'clasificacion' | 'estadisticas' | 'partidos' | 'plantilla'>('list');
     const [matches, setMatches] = useState<any[]>([]);
     const [members, setMembers] = useState<any[]>([]);
     const [editMatch, setEditMatch] = useState<any | null>(null);
+    const [campuses, setCampuses] = useState<any[]>([]);
+
+
+
+    const formatDate = (dateString: string) => {
+        const [day, month, year] = dateString.split('/');
+        return `${year}-${month}-${day}`;
+    };
 
     useEffect(() => {
         const fetchTeams = async () => {
@@ -33,6 +41,17 @@ const Equipos = () => {
 
         fetchTeams();
     }, [user]);
+
+    useEffect(() => {
+        axios.get(`${apiUrl}/campuses`)
+            .then(response => {
+                setCampuses(response.data);
+                console.log(response.data);
+            })
+            .catch(error => {
+                console.error('Error fetching campuses:', error);
+            });
+    }, []);
 
     useEffect(() => {
         if (selectedTeam && view === 'partidos') {
@@ -89,12 +108,18 @@ const Equipos = () => {
             });
     };
 
-    const handleChange = (e: any) => {
-        const { name, value } = e.target;
-        setEditMatch({
-            ...editMatch,
-            [name]: value
-        });
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { name, value } = event.target;
+
+        if (name === 'date') {
+            const [year, month, day] = value.split('-');
+            setEditMatch({ ...editMatch, [name]: `${day}/${month}/${year}` });
+        } else if (name === 'location') {
+            const selectedCampus = campuses.find(campus => campus.name === value);
+            setEditMatch({ ...editMatch, campus: selectedCampus });
+        } else {
+            setEditMatch({ ...editMatch, [name]: value });
+        }
     };
 
     return (
@@ -187,23 +212,26 @@ const Equipos = () => {
                     <form onSubmit={handleUpdateMatch}>
                         <label>
                             Fecha:
-                            <input type="date" name="date" value={editMatch.date} onChange={handleChange} />
-                        </label>
+                            <input type="date" name="date" value={formatDate(editMatch.date)} onChange={handleChange} />                        </label>
                         <label>
                             Hora:
                             <input type="time" name="time" value={editMatch.time} onChange={handleChange} />
                         </label>
                         <label>
                             Ubicación:
-                            <input type="text" name="location" value={editMatch.campus.name} onChange={handleChange} />
+                            <select name="location" value={editMatch.campus.name} onChange={handleChange}>
+                                {campuses.map(campus => (
+                                    <option key={campus.id} value={campus.name}>{campus.name}</option>
+                                ))}
+                            </select>
                         </label>
                         <label>
                             Resultado Local:
-                            <input type="number" name="homeTeamResult" value={editMatch.homeTeamResult} onChange={handleChange} />
+                            <input type="number" name="homeTeamResult" min="0" value={editMatch.homeTeamResult} onChange={handleChange} />
                         </label>
                         <label>
                             Resultado Visitante:
-                            <input type="number" name="awayTeamResult" value={editMatch.awayTeamResult} onChange={handleChange} />
+                            <input type="number" name="awayTeamResult" min="0" value={editMatch.awayTeamResult} onChange={handleChange} />
                         </label>
                         <button type="submit">Guardar Cambios</button>
                         <button type="button" onClick={() => setEditMatch(null)}>Cancelar</button>
