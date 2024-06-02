@@ -17,6 +17,51 @@ const Equipos = () => {
     const [editMatch, setEditMatch] = useState<any | null>(null);
     const [campuses, setCampuses] = useState<any[]>([]);
 
+    const statisticsData = [
+        {
+            title: "Partidos Jugados",
+            value: matches.filter(match => match.homeTeamResult !== '-' && match.awayTeamResult !== '-').length,
+        },
+        {
+            title: "Partidos Ganados",
+            value: matches.filter(match => match.homeTeamResult !== '-' && match.awayTeamResult !== '-' && match.homeTeamResult > match.awayTeamResult).length,
+        },
+        {
+            title: "Partidos Perdidos",
+            value: matches.filter(match => match.homeTeamResult !== '-' && match.awayTeamResult !== '-' && match.homeTeamResult < match.awayTeamResult).length,
+        },
+        {
+            title: "Partidos Empatados",
+            value: matches.filter(match => match.homeTeamResult !== '-' && match.awayTeamResult !== '-' && match.homeTeamResult === match.awayTeamResult).length,
+        },
+        {
+            title: "Porcentaje de Victorias",
+            value: (
+                matches.filter(match => match.homeTeamResult !== '-' && match.awayTeamResult !== '-' && match.homeTeamResult > match.awayTeamResult).length /
+                matches.filter(match => match.homeTeamResult !== '-' && match.awayTeamResult !== '-').length * 100
+            ).toFixed(2) + "%",
+        },
+        {
+            title: "Goles a Favor",
+            value: matches.reduce((total, match) => match.homeTeamResult !== '-' && match.awayTeamResult !== '-' ? total + (match.homeTeam.id === selectedTeam!.id ? parseInt(match.homeTeamResult) : parseInt(match.awayTeamResult)) : total, 0),
+        },
+        {
+            title: "Goles en Contra",
+            value: matches.reduce((total, match) => match.homeTeamResult !== '-' && match.awayTeamResult !== '-' ? total + (match.homeTeam.id === selectedTeam!.id ? parseInt(match.awayTeamResult) : parseInt(match.homeTeamResult)) : total, 0),
+        },
+        {
+            title: "Diferencia de Goles",
+            value: matches.reduce((total, match) => match.homeTeamResult !== '-' && match.awayTeamResult !== '-' ? total + (parseInt(match.homeTeamResult) - parseInt(match.awayTeamResult)) : total, 0),
+        },
+        {
+            title: "Partidos en Casa",
+            value: matches.filter(match => match.homeTeam.id === selectedTeam!.id).length,
+        },
+        {
+            title: "Partidos Fuera",
+            value: matches.filter(match => match.awayTeam.id === selectedTeam!.id).length,
+        },
+    ];
 
 
     const formatDate = (dateString: string) => {
@@ -46,7 +91,6 @@ const Equipos = () => {
         axios.get(`${apiUrl}/campuses`)
             .then(response => {
                 setCampuses(response.data);
-                console.log(response.data);
             })
             .catch(error => {
                 console.error('Error fetching campuses:', error);
@@ -99,7 +143,6 @@ const Equipos = () => {
         e.preventDefault();
         axios.put(`${apiUrl}/matches/${editMatch.id}`, editMatch)
             .then(response => {
-                console.log(editMatch)
                 setEditMatch(null);
                 setMatches(matches.map(m => m.id === response.data.id ? response.data : m));
             })
@@ -154,6 +197,16 @@ const Equipos = () => {
                         <button className="team-option" onClick={() => handleViewChange('partidos')}>Partidos</button>
                         <button className="team-option" onClick={() => handleViewChange('plantilla')}>Plantilla</button>
                     </div>
+                    {view === 'estadisticas' && (
+                        <div className="statistics-container">
+                            {statisticsData.map((stat, index) => (
+                                <div key={index} className="statistic">
+                                    <h4>{stat.title}</h4>
+                                    <p>{stat.value}</p>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                     {view === 'partidos' && (
                         <div className="matches-container">
                             <ul className="matches-list">
@@ -204,6 +257,7 @@ const Equipos = () => {
                             )}
                         </div>
                     )}
+
                 </div>
             )}
             {editMatch && (

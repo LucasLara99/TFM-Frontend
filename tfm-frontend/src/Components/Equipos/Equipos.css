@@ -21,6 +21,7 @@
 }
 
 .equipo-card {
+    height: 10em;
     padding: 1em;
     background-color: #D60D8C;
     border-radius: 10px;
@@ -77,18 +78,18 @@
 .team-details-header {
     position: relative;
     text-align: center;
-  }
-  
-  .team-details-header .back-button {
+}
+
+.team-details-header .back-button {
     position: absolute;
     left: 0;
     top: 50%;
     transform: translateY(-50%);
-  }
-  
-  .team-details-header .selected-team-name {
+}
+
+.team-details-header .selected-team-name {
     display: inline-block;
-  }
+}
 
 .back-button {
     display: flex;
@@ -175,7 +176,7 @@
 
 .ADMIN.match-item:hover {
     background-color: #e4e4e4;
-  }
+}
 
 .match-info {
     display: flex;
@@ -236,51 +237,70 @@
 }
 
 .members-container {
-    margin-top: 2em;
-}
-
-.members-title {
-    font-size: 1.5em;
-    margin-bottom: 1em;
-    color: #D60D8C;
+    width: 80%;
+    margin: 2em auto;
+    background-color: #ffffff;
+    padding: 2em;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .members-list {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    list-style: none;
-    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1em;
 }
 
 .member-card {
-    width: 90%;
-    background-color: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    background-color: #D60D8C;
+    padding: 1em;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-top: 1em;
-    padding: 1em;
     text-align: center;
+    transition: transform 0.2s ease-in-out;
+    justify-content: center;
+    width: 10em;
 }
 
 .member-card h3 {
+    font-size: 1.25em;
+    color: #ffffff;
     margin: 0;
-    font-size: 1.2em;
-    color: #D60D8C;
 }
 
 .member-card p {
-    margin: 0.5em 0 0;
     font-size: 1em;
-    color: #333;
+    color: #ffffff;
+    margin: 0;
 }
 
 .no-members {
+    font-size: 1.25em;
     color: #D60D8C;
     font-style: italic;
     text-align: center;
 }
+
+@media (max-width: 768px) {
+    .members-container {
+        width: 90%;
+    }
+
+    .member-card {
+        padding: 1em;
+    }
+
+    .member-card h3 {
+        font-size: 1em;
+    }
+
+    .member-card p {
+        font-size: 0.9em;
+    }
+}
+
 
 .edit-match-modal {
     position: fixed;
@@ -339,4 +359,57 @@
 
 .edit-match-modal button[type="button"]:hover {
     background-color: #999;
+}
+
+.statistics-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1.5em;
+    padding: 0 2em 0 2em;
+    border-radius: 10px;
+    margin-top: 2em;
+}
+
+.statistic {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.2s ease-in-out;
+    padding: 0.5em 1em 0.5em 1em;
+    height: 8em;
+}
+
+.statistic h4 {
+    font-size: 1.10em;
+    color: #D60D8C;
+    margin: 0;
+}
+
+.statistic p {
+    font-size: 1.75em;
+    color: #D60D8C;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .statistics-container {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+
+    .statistic {
+        padding: 1em;
+    }
+
+    .statistic h4 {
+        font-size: 1em;
+    }
+
+    .statistic p {
+        font-size: 1.25em;
+    }
 }
