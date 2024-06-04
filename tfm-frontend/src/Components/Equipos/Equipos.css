@@ -16,7 +16,6 @@
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     grid-gap: 1em;
     padding: 1em;
-    height: 70vh;
     overflow-y: auto;
 }
 
@@ -120,6 +119,7 @@
     justify-content: center;
     flex-wrap: wrap;
     gap: 1.5em;
+    margin-bottom: 3em;
 }
 
 .team-option {
@@ -246,9 +246,10 @@
 }
 
 .members-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1em;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .member-card {
@@ -339,6 +340,14 @@
     background-color: #D60D8C;
 }
 
+.edit-match-modal select {
+    padding: 0.5em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    color: #fff;
+    background-color: #D60D8C;
+}
+
 .edit-match-modal button {
     padding: 0.7em 1.5em;
     background-color: #D60D8C;
@@ -362,12 +371,13 @@
 }
 
 .statistics-container {
+    width: 65vw;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 1.5em;
+    gap: 2.5em;
     padding: 0 2em 0 2em;
     border-radius: 10px;
-    margin-top: 2em;
+    margin: inherit
 }
 
 .statistic {
@@ -412,4 +422,39 @@
     .statistic p {
         font-size: 1.25em;
     }
+}
+
+.classification-container {
+    padding: 2em;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 2em;
+    margin-left: 2em;
+    margin-right: 2em;
+}
+
+.classification-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.classification-table th,
+.classification-table td {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+.classification-table th {
+    background-color: #D60D8C;
+    color: white;
+}
+
+.classification-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.classification-table tr:hover {
+    background-color: #ddd;
 }

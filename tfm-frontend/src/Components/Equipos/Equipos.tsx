@@ -16,53 +16,70 @@ const Equipos = () => {
     const [members, setMembers] = useState<any[]>([]);
     const [editMatch, setEditMatch] = useState<any | null>(null);
     const [campuses, setCampuses] = useState<any[]>([]);
+    const [classification, setClassification] = useState<any[]>([]);
+
+    const goalsFor = selectedTeam ? matches.reduce((total, match) => {
+        if (selectedTeam && match.homeTeam && match.awayTeam && match.homeTeamResult !== '-' && match.awayTeamResult !== '-') {
+            return total + (match.homeTeam.id === selectedTeam.id ? parseInt(match.homeTeamResult) : (match.awayTeam.id === selectedTeam.id ? parseInt(match.awayTeamResult) : 0));
+        }
+        return total;
+    }, 0) : 0;
+
+    const goalsAgainst = selectedTeam ? matches.reduce((total, match) => {
+        if (selectedTeam && match.homeTeam && match.awayTeam && match.homeTeamResult !== '-' && match.awayTeamResult !== '-') {
+            return total + (match.homeTeam.id === selectedTeam.id ? parseInt(match.awayTeamResult) : (match.awayTeam.id === selectedTeam.id ? parseInt(match.homeTeamResult) : 0));
+        }
+        return total;
+    }, 0) : 0;
 
     const statisticsData = [
         {
             title: "Partidos Jugados",
-            value: matches.filter(match => match.homeTeamResult !== '-' && match.awayTeamResult !== '-').length,
+            value: matches.filter(match => match.homeTeam && match.awayTeam && match.homeTeamResult !== '-' && match.awayTeamResult !== '-').length,
         },
         {
             title: "Partidos Ganados",
-            value: matches.filter(match => match.homeTeamResult !== '-' && match.awayTeamResult !== '-' && match.homeTeamResult > match.awayTeamResult).length,
+            value: matches.filter(match => match.homeTeam && match.awayTeam && match.homeTeamResult !== '-' && match.awayTeamResult !== '-' && match.homeTeamResult > match.awayTeamResult).length,
         },
         {
             title: "Partidos Perdidos",
-            value: matches.filter(match => match.homeTeamResult !== '-' && match.awayTeamResult !== '-' && match.homeTeamResult < match.awayTeamResult).length,
+            value: matches.filter(match => match.homeTeam && match.awayTeam && match.homeTeamResult !== '-' && match.awayTeamResult !== '-' && match.homeTeamResult < match.awayTeamResult).length,
         },
         {
             title: "Partidos Empatados",
-            value: matches.filter(match => match.homeTeamResult !== '-' && match.awayTeamResult !== '-' && match.homeTeamResult === match.awayTeamResult).length,
+            value: matches.filter(match => match.homeTeam && match.awayTeam && match.homeTeamResult !== '-' && match.awayTeamResult !== '-' && match.homeTeamResult === match.awayTeamResult).length,
         },
         {
             title: "Porcentaje de Victorias",
             value: (
-                matches.filter(match => match.homeTeamResult !== '-' && match.awayTeamResult !== '-' && match.homeTeamResult > match.awayTeamResult).length /
-                matches.filter(match => match.homeTeamResult !== '-' && match.awayTeamResult !== '-').length * 100
-            ).toFixed(2) + "%",
+                matches.filter(match => match.homeTeam && match.awayTeam && match.homeTeamResult !== '-' && match.awayTeamResult !== '-').length > 0 ?
+                    (
+                        matches.filter(match => match.homeTeam && match.awayTeam && match.homeTeamResult !== '-' && match.awayTeamResult !== '-' && match.homeTeamResult > match.awayTeamResult).length /
+                        matches.filter(match => match.homeTeam && match.awayTeam && match.homeTeamResult !== '-' && match.awayTeamResult !== '-').length * 100
+                    ).toFixed(2) + "%" : "-"
+            ),
         },
         {
             title: "Goles a Favor",
-            value: matches.reduce((total, match) => match.homeTeamResult !== '-' && match.awayTeamResult !== '-' ? total + (match.homeTeam.id === selectedTeam!.id ? parseInt(match.homeTeamResult) : parseInt(match.awayTeamResult)) : total, 0),
+            value: goalsFor,
         },
         {
             title: "Goles en Contra",
-            value: matches.reduce((total, match) => match.homeTeamResult !== '-' && match.awayTeamResult !== '-' ? total + (match.homeTeam.id === selectedTeam!.id ? parseInt(match.awayTeamResult) : parseInt(match.homeTeamResult)) : total, 0),
+            value: goalsAgainst,
         },
         {
             title: "Diferencia de Goles",
-            value: matches.reduce((total, match) => match.homeTeamResult !== '-' && match.awayTeamResult !== '-' ? total + (parseInt(match.homeTeamResult) - parseInt(match.awayTeamResult)) : total, 0),
+            value: goalsFor - goalsAgainst,
         },
         {
             title: "Partidos en Casa",
-            value: matches.filter(match => match.homeTeam.id === selectedTeam!.id).length,
+            value: selectedTeam ? matches.filter(match => match.homeTeam && match.homeTeam.id === selectedTeam.id).length : 0,
         },
         {
             title: "Partidos Fuera",
-            value: matches.filter(match => match.awayTeam.id === selectedTeam!.id).length,
+            value: selectedTeam ? matches.filter(match => match.awayTeam && match.awayTeam.id === selectedTeam.id).length : 0,
         },
     ];
-
 
     const formatDate = (dateString: string) => {
         const [day, month, year] = dateString.split('/');
@@ -70,20 +87,6 @@ const Equipos = () => {
     };
 
     useEffect(() => {
-        const fetchTeams = async () => {
-            try {
-                if (user!.rol === 'ADMIN') {
-                    const response = await axios.get(`${apiUrl}/teams/getall`);
-                    setTeams(response.data);
-                } else {
-                    const response = await axios.get(`${apiUrl}/users/${user!.id}/teams`);
-                    setTeams(response.data);
-                }
-            } catch (error) {
-                console.error('Error fetching teams:', error);
-            }
-        };
-
         fetchTeams();
     }, [user]);
 
@@ -98,37 +101,109 @@ const Equipos = () => {
     }, []);
 
     useEffect(() => {
-        if (selectedTeam && view === 'partidos') {
-            axios.get(`${apiUrl}/matches/team/${selectedTeam.id}`)
-                .then(response => {
-                    setMatches(response.data);
-                })
-                .catch(error => {
-                    console.error('Error fetching matches:', error);
-                });
+        if (apiUrl && selectedTeam) {
+            if (view === 'clasificacion' || view === 'estadisticas') {
+                axios.get(`${apiUrl}/leagues/${selectedTeam.groupId}/teams`)
+                    .then(response => {
+                        setMatches(response.data);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching matches:', error);
+                    });
+            }
+
+            if (view === 'estadisticas') {
+                axios.get(`${apiUrl}/matches/team/${selectedTeam!.id}`)
+                    .then(response => {
+                        setMatches(response.data);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching matches:', error);
+                    });
+            }
+
+            if (view === 'partidos' && user!.rol === 'ADMIN') {
+                axios.get(`${apiUrl}/matches/group/${selectedTeam.groupId}`)
+                    .then(response => {
+                        setMatches(response.data);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching matches:', error);
+                    });
+            } else {
+                axios.get(`${apiUrl}/matches/team/${selectedTeam.id}`)
+                    .then(response => {
+                        setMatches(response.data);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching matches:', error);
+                    });
+            }
+
+            if (view === 'plantilla') {
+                axios.get(`${apiUrl}/teams/${selectedTeam.id}/members`)
+                    .then(response => {
+                        setMembers(response.data);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching team members:', error);
+                    });
+            }
         }
-    }, [selectedTeam, view]);
+    }, [view, apiUrl, selectedTeam]);
 
     useEffect(() => {
-        if (selectedTeam && view === 'plantilla') {
-            axios.get(`${apiUrl}/teams/${selectedTeam.id}/members`)
-                .then(response => {
-                    setMembers(response.data);
-                })
-                .catch(error => {
-                    console.error('Error fetching team members:', error);
-                });
+        const calculateClassification = async () => {
+            const teamStats = await Promise.all(teams.map(async team => {
+                const response = await axios.get(`${apiUrl}/matches/team/${team.id}`);
+                const teamMatches = response.data;
+
+                const matchesPlayed = teamMatches.filter((match: any) => match.homeTeam && match.awayTeam && match.homeTeamResult !== '-' && match.awayTeamResult !== '-' && (match.homeTeam.id === team.id || match.awayTeam.id === team.id));
+                const matchesWon = matchesPlayed.filter((match: any) => (match.homeTeam && match.homeTeam.id === team.id && match.homeTeamResult > match.awayTeamResult) || (match.awayTeam && match.awayTeam.id === team.id && match.awayTeamResult > match.homeTeamResult));
+                const matchesDrawn = matchesPlayed.filter((match: any) => match.homeTeamResult === match.awayTeamResult);
+                const matchesLost = matchesPlayed.filter((match: any) => (match.homeTeam && match.homeTeam.id === team.id && match.homeTeamResult < match.awayTeamResult) || (match.awayTeam && match.awayTeam.id === team.id && match.awayTeamResult < match.homeTeamResult));
+                const goalsFor = matchesPlayed.reduce((total: number, match: any) => total + (match.homeTeam && match.homeTeam.id === team.id ? parseInt(match.homeTeamResult) : parseInt(match.awayTeamResult)), 0);
+                const goalsAgainst = matchesPlayed.reduce((total: number, match: any) => total + (match.homeTeam && match.homeTeam.id === team.id ? parseInt(match.awayTeamResult) : parseInt(match.homeTeamResult)), 0);
+                const goalDifference = goalsFor - goalsAgainst;
+                const points = (matchesWon.length * 3) + matchesDrawn.length;
+
+                return {
+                    team,
+                    matchesPlayed: matchesPlayed.length,
+                    matchesWon: matchesWon.length,
+                    matchesDrawn: matchesDrawn.length,
+                    matchesLost: matchesLost.length,
+                    goalsFor,
+                    goalsAgainst,
+                    goalDifference,
+                    points,
+                };
+            }));
+
+            setClassification(teamStats.sort((a, b) => b.points - a.points || b.goalDifference - a.goalDifference));
+        };
+
+        if (teams.length > 0) {
+            calculateClassification();
         }
-    }, [selectedTeam, view]);
+    }, [teams]);
 
     const handleTeamClick = (team: Team) => {
         setSelectedTeam(team);
         setView('clasificacion');
+        axios.get(`${apiUrl}/teams/groups/${team.groupId}/teams`)
+            .then(response => {
+                setTeams(response.data);
+            })
+            .catch(error => {
+                console.error('Error fetching teams:', error);
+            });
     };
 
     const handleBackToList = () => {
         setSelectedTeam(null);
         setView('list');
+        fetchTeams();
     };
 
     const handleViewChange = (newView: 'list' | 'clasificacion' | 'estadisticas' | 'partidos' | 'plantilla') => {
@@ -141,6 +216,10 @@ const Equipos = () => {
 
     const handleUpdateMatch = (e: any) => {
         e.preventDefault();
+        if (editMatch.homeTeamResult === '-' || editMatch.awayTeamResult === '-') {
+            alert('Ambos equipos deben tener un resultado antes de actualizar el partido.');
+            return;
+        }
         axios.put(`${apiUrl}/matches/${editMatch.id}`, editMatch)
             .then(response => {
                 setEditMatch(null);
@@ -149,6 +228,21 @@ const Equipos = () => {
             .catch(error => {
                 console.error('Error updating match:', error);
             });
+    };
+
+    const fetchTeams = async () => {
+        try {
+            if (user!.rol === 'ADMIN') {
+                const response = await axios.get(`${apiUrl}/teams/getall`);
+                setTeams(response.data);
+            } else {
+                const response = await axios.get(`${apiUrl}/users/${user!.id}/teams`);
+                setTeams(response.data);
+            }
+
+        } catch (error) {
+            console.error('Error fetching teams:', error);
+        }
     };
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -197,6 +291,40 @@ const Equipos = () => {
                         <button className="team-option" onClick={() => handleViewChange('partidos')}>Partidos</button>
                         <button className="team-option" onClick={() => handleViewChange('plantilla')}>Plantilla</button>
                     </div>
+                    {view === 'clasificacion' && (
+                        <div className="classification-container">
+                            <table className="classification-table">
+                                <thead>
+                                    <tr>
+                                        <th>Equipo</th>
+                                        <th>J</th>
+                                        <th>G</th>
+                                        <th>E</th>
+                                        <th>P</th>
+                                        <th>GF</th>
+                                        <th>GC</th>
+                                        <th>DG</th>
+                                        <th>Pts</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {classification.map((teamStat, index) => (
+                                        <tr key={index} className={teamStat.team.id === selectedTeam?.id ? 'selected-team' : ''}>
+                                            <td className={`team-name ${teamStat.team.id === selectedTeam?.id ? 'bold' : ''}`}>{teamStat.team.name}</td>
+                                            <td>{teamStat.matchesPlayed}</td>
+                                            <td>{teamStat.matchesWon}</td>
+                                            <td>{teamStat.matchesDrawn}</td>
+                                            <td>{teamStat.matchesLost}</td>
+                                            <td>{teamStat.goalsFor}</td>
+                                            <td>{teamStat.goalsAgainst}</td>
+                                            <td>{teamStat.goalDifference}</td>
+                                            <td>{teamStat.points}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
                     {view === 'estadisticas' && (
                         <div className="statistics-container">
                             {statisticsData.map((stat, index) => (
@@ -211,32 +339,34 @@ const Equipos = () => {
                         <div className="matches-container">
                             <ul className="matches-list">
                                 {matches.map((match: any, index: number) => (
-                                    <li
-                                        key={`${match.id}-${match.homeTeam.id}-${match.awayTeam.id}-${index}`}
-                                        className={`match-item ${user!.rol === 'ADMIN' ? 'ADMIN' : ''}`}
-                                        onClick={user!.rol === 'ADMIN' ? () => handleEditMatch(match) : undefined}
-                                        style={user!.rol === 'ADMIN' ? { cursor: 'pointer' } : undefined}
-                                    >
-                                        <div className="match-info">
-                                            <div className="team team-home">
-                                                <span className={`team-name ${match.homeTeam.name === selectedTeam.name ? 'bold' : ''}`}>
-                                                    {match.homeTeam.name}
-                                                </span>
-                                                <p className='match-score'>{match.homeTeamResult}</p>
+                                    match.homeTeam && match.awayTeam && match.campus ? (
+                                        <li
+                                            key={`${match.id}-${match.homeTeam.id}-${match.awayTeam.id}-${index}`}
+                                            className={`match-item ${user!.rol === 'ADMIN' ? 'ADMIN' : ''}`}
+                                            onClick={user!.rol === 'ADMIN' ? () => handleEditMatch(match) : undefined}
+                                            style={user!.rol === 'ADMIN' ? { cursor: 'pointer' } : undefined}
+                                        >
+                                            <div className="match-info">
+                                                <div className="team team-home">
+                                                    <span className={`team-name ${match.homeTeam.name === selectedTeam.name ? 'bold' : ''}`}>
+                                                        {match.homeTeam.name}
+                                                    </span>
+                                                    <p className='match-score'>{match.homeTeamResult}</p>
+                                                </div>
+                                                <div className="match-details">
+                                                    <p>{match.date}</p>
+                                                    <p>{match.time}</p>
+                                                    <p>{match.campus.name}</p>
+                                                </div>
+                                                <div className="team team-away">
+                                                    <p className='match-score'>{match.awayTeamResult}</p>
+                                                    <span className={`team-name ${match.awayTeam.name === selectedTeam.name ? 'bold' : ''}`}>
+                                                        {match.awayTeam.name}
+                                                    </span>
+                                                </div>
                                             </div>
-                                            <div className="match-details">
-                                                <p>{match.date}</p>
-                                                <p>{match.time}</p>
-                                                <p>{match.campus.name}</p>
-                                            </div>
-                                            <div className="team team-away">
-                                                <p className='match-score'>{match.awayTeamResult}</p>
-                                                <span className={`team-name ${match.awayTeam.name === selectedTeam.name ? 'bold' : ''}`}>
-                                                    {match.awayTeam.name}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </li>
+                                        </li>
+                                    ) : null
                                 ))}
                             </ul>
                         </div>
@@ -257,7 +387,6 @@ const Equipos = () => {
                             )}
                         </div>
                     )}
-
                 </div>
             )}
             {editMatch && (
@@ -266,7 +395,8 @@ const Equipos = () => {
                     <form onSubmit={handleUpdateMatch}>
                         <label>
                             Fecha:
-                            <input type="date" name="date" value={formatDate(editMatch.date)} onChange={handleChange} />                        </label>
+                            <input type="date" name="date" value={formatDate(editMatch.date)} onChange={handleChange} />
+                        </label>
                         <label>
                             Hora:
                             <input type="time" name="time" value={editMatch.time} onChange={handleChange} />
