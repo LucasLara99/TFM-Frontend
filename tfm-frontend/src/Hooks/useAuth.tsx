@@ -4,8 +4,9 @@ import { User } from '../Models/User';
 import { useNavigate } from 'react-router-dom';
 import { Team } from '../Models/Team';
 import axios from 'axios';
+import { VITE_APP_API_URL } from '../constants';
 
-const apiUrl = import.meta.env.VITE_APP_API_URL;
+const apiUrl = VITE_APP_API_URL;
 
 interface AuthContextData {
     user: User | null;

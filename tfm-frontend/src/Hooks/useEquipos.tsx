@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react';
 import { Team } from '../Models/Team';
 import { useAuth } from './useAuth';
 import axios from 'axios';
+import { VITE_APP_API_URL } from '../constants';
 
-const apiUrl = import.meta.env.VITE_APP_API_URL;
+const apiUrl = VITE_APP_API_URL;
 
 export const useEquipos = () => {
     const { user } = useAuth();
