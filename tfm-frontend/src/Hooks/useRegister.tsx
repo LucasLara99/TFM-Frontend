@@ -1,7 +1,8 @@
 import { useMutation } from '@tanstack/react-query';
 import { User } from '../Models/User';
+import { VITE_APP_API_URL } from '../constants';
 
-const apiUrl = import.meta.env.VITE_APP_API_URL;
+const apiUrl = VITE_APP_API_URL;
 
 const useRegister = () => {
 

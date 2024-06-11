@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../Hooks/useAuth';
 import './JoinRequests.css';
+import { VITE_APP_API_URL } from '../../constants';
 
-const apiUrl = import.meta.env.VITE_APP_API_URL;
+const apiUrl = VITE_APP_API_URL;
 
 interface Request {
     id: number;

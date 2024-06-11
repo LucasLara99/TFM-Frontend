@@ -3,8 +3,9 @@ import axios from 'axios';
 import { useAuth } from '../../Hooks/useAuth';
 import './CreateTeamForm.css';
 import { AuthContext } from '../../Hooks/useAuth';
+import { VITE_APP_API_URL } from '../../constants';
 
-const apiUrl = import.meta.env.VITE_APP_API_URL;
+const apiUrl = VITE_APP_API_URL;
 
 const CreateTeamForm = ({ leagueId, groupId, onClose }: { leagueId: number; groupId: number; onClose: () => void }) => {
     const [teamName, setTeamName] = useState('');
@@ -19,7 +20,7 @@ const CreateTeamForm = ({ leagueId, groupId, onClose }: { leagueId: number; grou
     }
     const { setUserTeams } = authContext;
 
-    const handleCreateTeam = async (event: { preventDefault: () => void; }) => {
+    const handleCreateTeam = async (event: { preventDefault: () => void }) => {
         event.preventDefault();
 
         if (!user) {
@@ -54,19 +55,25 @@ const CreateTeamForm = ({ leagueId, groupId, onClose }: { leagueId: number; grou
             const newTeams = [...userTeams, createdTeam];
             setUserTeams(newTeams);
             onClose();
-            window.location.reload();
+            reloadPage();
         } catch (error) {
             console.error('Error creating team:', error);
         }
     };
+
+    const reloadPage = () => {
+        window.location.reload();
+    };
+
 
     return (
         <div className="create-team-form-container">
             <h2>Crear Nuevo Equipo</h2>
             <form onSubmit={handleCreateTeam}>
                 <div>
-                    <label>Nombre del Equipo</label>
+                    <label htmlFor="teamName">Nombre del Equipo</label>
                     <input
+                        id="teamName"
                         type="text"
                         value={teamName}
                         onChange={(e) => setTeamName(e.target.value)}
@@ -74,8 +81,9 @@ const CreateTeamForm = ({ leagueId, groupId, onClose }: { leagueId: number; grou
                     />
                 </div>
                 <div>
-                    <label>Horario</label>
+                    <label htmlFor="schedule">Horario</label>
                     <input
+                        id="schedule"
                         type="text"
                         value={schedule}
                         onChange={(e) => setSchedule(e.target.value)}
@@ -83,8 +91,9 @@ const CreateTeamForm = ({ leagueId, groupId, onClose }: { leagueId: number; grou
                     />
                 </div>
                 <div>
-                    <label>Ubicación</label>
+                    <label htmlFor="location">Ubicación</label>
                     <input
+                        id="location"
                         type="text"
                         value={location}
                         onChange={(e) => setLocation(e.target.value)}
@@ -92,8 +101,9 @@ const CreateTeamForm = ({ leagueId, groupId, onClose }: { leagueId: number; grou
                     />
                 </div>
                 <div>
-                    <label>Máximo de Plazas</label>
+                    <label htmlFor="maxPlaces">Máximo de Plazas</label>
                     <input
+                        id="maxPlaces"
                         type="text"
                         value={maxPlaces}
                         onChange={(e) => setMaxPlaces(e.target.value)}

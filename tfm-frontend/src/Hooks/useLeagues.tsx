@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { League } from '../Models/League';
 import { useAuth } from '../Hooks/useAuth';
+import { VITE_APP_API_URL } from '../constants';
 
-const apiUrl = import.meta.env.VITE_APP_API_URL;
+const apiUrl = VITE_APP_API_URL;
 
 const leagueEndpoints = {
     'Fútbol': 1,
