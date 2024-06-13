@@ -31,7 +31,6 @@ describe('CreateTeamForm', () => {
         mockUseAuth.mockReturnValue({ user: mockUser, userTeams: mockUserTeams });
         jest.spyOn(window, 'alert').mockImplementation(() => { });
 
-        // Mock window.location.reload directly without deleting window.location
         Object.defineProperty(window, 'location', {
             value: {
                 reload: jest.fn(),

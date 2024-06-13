@@ -19,7 +19,6 @@ describe('JoinRequests component', () => {
     beforeEach(() => {
         (useAuth as jest.Mock).mockReturnValue({ user: mockUser });
 
-        // Mock de fetch
         global.fetch = jest.fn();
     });
 
@@ -56,17 +55,13 @@ describe('JoinRequests component', () => {
             expect(screen.getByText('User 2')).toBeInTheDocument();
         });
 
-        // Mock para la respuesta de aceptación/rechazo de solicitud
         (fetch as jest.Mock).mockResolvedValueOnce({ ok: true });
 
-        // Aceptar solicitud
         fireEvent.click(screen.getAllByText('Aceptar')[0]);
         await waitFor(() => {
             expect(screen.queryByText('User 1')).not.toBeInTheDocument();
         });
-
-        // Rechazar solicitud
-        // Necesitamos mockear nuevamente la respuesta de fetch para la segunda solicitud
+        
         (fetch as jest.Mock).mockResolvedValueOnce({ ok: true });
 
         fireEvent.click(screen.getAllByText('Rechazar')[0]);

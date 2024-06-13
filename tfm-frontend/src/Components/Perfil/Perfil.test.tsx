@@ -36,13 +36,11 @@ describe('Perfil component', () => {
     test('renders profile with user details and teams', () => {
         render(<Perfil />);
 
-        // Verificar que el componente Header se renderiza
         expect(screen.getByText('Mocked Header')).toBeInTheDocument();
 
-        // Verificar detalles del usuario
         expect(screen.getByText(mockUser.name)).toBeInTheDocument();
         expect(screen.getByText((_, node) => {
-            if (!node) return false; // Manejo del caso de node null
+            if (!node) return false;
             const hasText = (node.textContent || '').includes(`Email: ${mockUser.email}`);
             const nodeHasText = hasText;
             const childrenDontHaveText = Array.from(node.children).every(
@@ -53,7 +51,7 @@ describe('Perfil component', () => {
         })).toBeInTheDocument();
 
         expect(screen.getByText((_, node) => {
-            if (!node) return false; // Manejo del caso de node null
+            if (!node) return false;
             const hasText = (node.textContent || '').includes(`Facultad: ${mockUser.facultad}`);
             const nodeHasText = hasText;
             const childrenDontHaveText = Array.from(node.children).every(
@@ -63,7 +61,6 @@ describe('Perfil component', () => {
             return nodeHasText && childrenDontHaveText;
         })).toBeInTheDocument();
 
-        // Verificar equipos del usuario
         mockUserTeams.forEach(team => {
             expect(screen.getByText(team.name)).toBeInTheDocument();
         });
@@ -83,11 +80,10 @@ describe('Perfil component', () => {
 
         render(<Perfil />);
 
-        // Verificar que los detalles faltantes se manejan correctamente
         expect(screen.getByText('Nombre no disponible')).toBeInTheDocument();
 
         expect(screen.getByText((_, node) => {
-            if (!node) return false; // Manejo del caso de node null
+            if (!node) return false;
             const hasText = (node.textContent || '').includes('Facultad: No especificado');
             const nodeHasText = hasText;
             const childrenDontHaveText = Array.from(node.children).every(
